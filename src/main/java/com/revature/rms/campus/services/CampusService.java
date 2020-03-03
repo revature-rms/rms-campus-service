@@ -23,11 +23,9 @@ public class CampusService {
 
     public Campus findByName(String name) { return cMongoRepo.findByName(name); }
 
-    public C
-
     public Optional <Campus> findById(Integer id) { return cMongoRepo.findById(id); }
 
-    public Campus save(Campus campus) { return cMongoRepo.save(campus); }
+    public Campus register(Campus campus) { return cMongoRepo.save(campus); }
 
     public void deleteById(Integer id) { cMongoRepo.deleteById(id); }
 
