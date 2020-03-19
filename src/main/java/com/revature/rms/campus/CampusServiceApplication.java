@@ -128,6 +128,8 @@ public class CampusServiceApplication implements CommandLineRunner {
 //		Campus campus1 = new Campus("University of South Florida", "USF", new Address(), 1, 2, 3, campus1Buildings, new ArrayList<Integer>(), new ResourceMetadata());
 //		campusService.save(campus1);
 
+		//test
+
 		ResourceMetadata meta = new ResourceMetadata(1,"3/20/20", 1, "3/20/20",1);
 		ArrayList<RoomStatus> roomStatus1 = new ArrayList<>();
 		roomStatus1.add(new RoomStatus(1, true, true, "1/1/19", 1, "Good", true));
