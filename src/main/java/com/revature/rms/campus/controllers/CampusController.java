@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v2/campus")
+@RequestMapping("/campuses/campuses") // service name/controller name
 public class CampusController {
 
     private CampusService campusService;
@@ -23,13 +23,6 @@ public class CampusController {
     public CampusController(CampusService campusService) {
         this.campusService = campusService;
     }
-
-    /**
-     * getAllCampus method: Returns a list of all the campus objects in the database.
-     * @return a list of all the campuses
-     */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Campus> getAllCampus() { return campusService.findAll(); }
 
     /**
      * saveCampus method: Takes in a campus object as the input.
@@ -45,20 +38,25 @@ public class CampusController {
     }
 
     /**
+     * getAllCampus method: Returns a list of all the campus objects in the database.
+     * @return a list of all the campuses
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Campus> getAllCampuses() { return campusService.findAll(); }
+
+    /**
      * getCampusById method: Returns a campus object when the id int matches a record in the database.
      * @param id campusId int value
      * @return a campus with matching id
      */
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Campus getCampusById(@PathVariable int id) {
         if (id <= 0) {
             throw new InvalidInputException();
         }
-        Optional<Campus> _campus = campusService.findById(id);
-        if (!_campus.isPresent()) {
-            throw new ResourceNotFoundException();
-        }
-        return campusService.findById(id).get();
+        Campus campus = campusService.findById(id);
+
+        return campus;
     }
 
     /**
@@ -67,7 +65,7 @@ public class CampusController {
      * @param id trainingLeadId int value
      * @return a campus with matching trainerLeadId
      */
-    @GetMapping(value = "/training/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/training-managers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Campus> getCampusByTrainingManagerId(@PathVariable int id) {
         if (id <= 0) {
             throw new InvalidInputException();
@@ -85,7 +83,7 @@ public class CampusController {
      * @param id stagingManagerId int value
      * @return a campus with matching stagingManagerId
      */
-    @GetMapping(value = "/staging/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/staging-managers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Campus> getCampusByStagingManagerId(@PathVariable int id) {
         if (id <= 0) {
             throw new InvalidInputException();
@@ -102,8 +100,7 @@ public class CampusController {
      * @param id ID of the app user
      * @return List of campuses
      */
-
-    @GetMapping(value = "/owner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/owners/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE) // owners is plural by convention; not sure if it makes more sense to make it owners
     public List<Campus> getByResourceOwnerId(@PathVariable int id){
         return campusService.findByResourceOwnerId(id);
     }
@@ -114,7 +111,6 @@ public class CampusController {
      * @param campus newly updated campus object
      * @return updated/modified campus object
      */
-
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Campus updateCampus(@RequestBody Campus campus) { return campusService.update(campus); }
 
@@ -123,7 +119,7 @@ public class CampusController {
      * deleteCampusById method: The campus object is deleted based on its campusId int
      * @param id campusId int value
      */
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/id/{id}")
     public boolean deleteCampusById(@PathVariable int id) {
         if(id <= 0) {
             throw new InvalidInputException();

@@ -1,12 +1,12 @@
 package com.revature.rms.campus.services;
 
 import com.revature.rms.campus.entities.*;
+import com.revature.rms.core.metadata.*;
 import com.revature.rms.campus.exceptions.InvalidInputException;
 import com.revature.rms.campus.exceptions.ResourceNotFoundException;
 import com.revature.rms.campus.exceptions.ResourcePersistenceException;
 //import com.revature.rms.campus.repositories.BuildingMongoRepository;
 import com.revature.rms.campus.repositories.BuildingRepository;
-import com.revature.rms.campus.repositories.ResourceMetadataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +27,8 @@ public class BuildingService {
     @Autowired
     private BuildingRepository buildingRepository;
 
-    @Autowired
-    private ResourceMetadataRepository resourceMetadataRepo;
-
     /**
-     * Save Method: Takes in a building object as the input. The input room
-     * object is tested to ensure that it is not null. If the building object
-     * is null then it will throw a ResourceNotFoundException.
-     * Once the building object passes the test it is then saved or persisted
-     * to the database.
+     * Save Method: Saves a new building object to the database.
      *
      * @param building
      * @return The new saved building object
@@ -44,7 +37,7 @@ public class BuildingService {
     public Building save(Building building) {
 
         if (building == null) {
-            throw new ResourcePersistenceException();
+            throw new ResourcePersistenceException("Null building cannot be saved!");
         }
         return buildingRepository.save(building);
     }
@@ -64,15 +57,8 @@ public class BuildingService {
     }
 
     /**
-     * findById Method: This takes in the id as the input
-     * parameter. The input room number is validated to ensure that it is not
-     * empty or negative or zero. If the id fails this validation an
-     * InvalidInputException is thrown.
-     * The building object with the specified building number is retrieved. The building
-     * object is tested to ensure that the building object is present. If the building
-     * object is not present then a ResourceNotFoundException is thrown.
-     * If all these validations are passed, the building object that have the specified
-     * building number is returned.
+     * findById Method: Finds a building using the buildingRepository and the
+     * building's ID.
      *
      * @param id
      * @return the building object with the same building id as the input parameter.
@@ -81,39 +67,42 @@ public class BuildingService {
     public Optional<Building> findById(int id) {
 
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidInputException("Id cannot be less than or equal to zero!");
         }
 
         Optional<Building> theBuilding = buildingRepository.findById(id);
         if (!theBuilding.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("No building found by that id!");
         }
 
         return buildingRepository.findById(id);
     }
 
     /**
-     * findByName Method: This takes in the building name as the input
-     * parameter.
+     * findByName Method: This method finds a building by its name in the database.
      *
      * @param name
      * @return the room object with the same room number as the input parameter.
      */
     @Transactional(readOnly = true)
     public Building findByName(String name) {
+        if (name == null) {
+            throw new InvalidInputException("Null value entered for name!");
+        }
         return buildingRepository.findByName(name);
     }
 
     /**
      * findByBuildingOwnerId method: Retrieves list of Buildings owned by an app user
+     *
      * @param id ID of the app user
      * @return List of buildings
      */
     @Transactional(readOnly = true)
-    public List<Building> findByBuildingOwnerId(Integer id){
+    public List<Building> findAllBuildingsByOwnerId(Integer id){
 
-        if(id < 1){
-            throw new InvalidInputException();
+        if(id <= 0){
+            throw new InvalidInputException("Id cannot be less than or equal to zero!");
         }
         Iterable<Building> allBuildings = buildingRepository.findAll();
         List<Building> buildings = new ArrayList<Building>();
@@ -124,7 +113,7 @@ public class BuildingService {
             }
         }
         if(buildings.isEmpty()){
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("The list of buildings is empty!");
         }
         return buildings;
     }
@@ -138,15 +127,15 @@ public class BuildingService {
      */
     @Transactional
     public Building update(Building building) {
+
+        if (building == null) {
+            throw new InvalidInputException("Null value entered for building!");
+        }
         return buildingRepository.save(building);
     }
 
     /**
-     * Delete Method: Building object is found by id and deleted
-     * The method takes in the building id. The input is tested to ensure
-     * that it is not empty, negative or zero. if the input is empty,
-     * negative or zero, an InvalidInputException is thrown.
-     * If the building id exist, the object is then deleted
+     * Delete Method: Deletes a building by its ID in the database.
      *
      * @param id
      * @return The deleted building object.
@@ -155,31 +144,28 @@ public class BuildingService {
     public void delete(int id) {
 
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidInputException("Id cannot be less than or equal to zero!");
         }
         buildingRepository.deleteById(id);
     }
 
     /**
-     * findByTrainingLeadId Method: Building object is found by the training lead id
-     * The method takes in the training lead id. The input is tested to ensure
-     * that it is not empty, negative or zero. if the input is empty,
-     * negative or zero, an InvalidInputException is thrown.
-     * If the training lead id exist, the building object is returned
+     * findByTrainingLeadId Method: Finds a building by the training lead's ID.
      *
      * @param id
      * @return The building object.
      */
     @Transactional(readOnly = true)
     public Building findByTrainingLeadId(int id) {
-        if (id < 1) throw new InvalidInputException();
+        if (id <= 0) throw new InvalidInputException("Id cannot be less than or equal to zero!");
         Building temp = buildingRepository.findByTrainingLead(id);
-        if (temp == null) throw new ResourceNotFoundException();
+        if (temp == null) throw new ResourceNotFoundException("No training lead found!");
         else return temp;
     }
 
     /**
      * getListFromIterator Method: Is a custom method that iterates and adds each object to a list of the specified Generic.
+     *
      * @param iterable an Iterable that wants to be converted into an ArrayList
      * @param <T> Generic of any ObjectType
      * @return Returns a List of type T

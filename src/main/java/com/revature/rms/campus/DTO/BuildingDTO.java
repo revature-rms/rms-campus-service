@@ -2,6 +2,7 @@ package com.revature.rms.campus.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.revature.rms.campus.entities.*;
+import com.revature.rms.core.metadata.*;
 
 import javax.persistence.*;
 import java.util.List;

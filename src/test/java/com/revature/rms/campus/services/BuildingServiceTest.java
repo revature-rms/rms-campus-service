@@ -1,5 +1,6 @@
 package com.revature.rms.campus.services;
 import com.revature.rms.campus.entities.*;
+import com.revature.rms.core.metadata.*;
 import com.revature.rms.campus.exceptions.InvalidInputException;
 import com.revature.rms.campus.exceptions.ResourceNotFoundException;
 import com.revature.rms.campus.exceptions.ResourcePersistenceException;
@@ -53,10 +54,11 @@ public class BuildingServiceTest {
     @Test(expected = ResourcePersistenceException.class)
     public void testSaveWithNullBuilding(){
 
+        Building testBuilding = new Building("Muma School of Business", "MSB", new Address(),
+                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
+
         Building expectedResult = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
-        when(sut.save(Mockito.any())).thenReturn(repo.save(Mockito.any()));
-        when(repo.save(Mockito.any())).thenThrow(ResourcePersistenceException.class);
 
         Building actualResults = sut.save(null);
 
@@ -86,10 +88,10 @@ public class BuildingServiceTest {
     }
 
     /**
-     * findBuildingByIdWithValidId() ensures BuildingService.findById() returns the object containing the same id as the one provided.
+     * testFindBuildingByIdWithValidId() ensures BuildingService.findById() returns the object containing the same id as the one provided.
      */
     @Test
-    public void findBuildingByIdWithValidId() {
+    public void testFindBuildingByIdWithValidId() {
         Optional<Building> expectedResult = Optional.of(new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata()));
 
@@ -99,30 +101,30 @@ public class BuildingServiceTest {
     }
 
     /**
-     * findBuildingWithValidIdNotFound() throws a ResourceNotFoundException when provided a correct id but,
+     * testFindBuildingWithValidIdNotFound() throws a ResourceNotFoundException when provided a correct id but,
      * there is no building associated with it.
      */
     @Test(expected = ResourceNotFoundException.class)
-    public void findBuildingWithValidIdNotFound() {
+    public void testFindBuildingWithValidIdNotFound() {
         when(repo.findById(Mockito.any())).thenReturn(Optional.empty());
         sut.findById(1);
     }
 
     /**
-     * findBuildingWithInvalidId() throws an InvalidInputException when the provided id is less than or equal to zero or
+     * testFindBuildingWithInvalidId() throws an InvalidInputException when the provided id is less than or equal to zero or
      * empty, that is the provided field is empty.
      */
     @Test(expected = InvalidInputException.class)
-    public void findBuildingWithInvalidId() {
+    public void testFindBuildingWithInvalidId() {
         sut.findById(0); sut.findById(0);
         verify(repo.findById(0), times(0));
     }
 
     /**
-     * findBuildingWithValidName() returns the object containing the same building name as the one provided.
+     * testFindBuildingWithValidName() returns the object containing the same building name as the one provided.
      */
     @Test
-    public void findBuildingWithValidName() {
+    public void testFindBuildingWithValidName() {
         String name = "Muma School of Business";
         Building expectedResult = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
@@ -134,10 +136,75 @@ public class BuildingServiceTest {
     }
 
     /**
-     * findBuildingByTrainingLead() returns an object containing the same trainer id as the one provided.
+     * testFindBuildingWithNullName returns InvalidInputException
+     */
+    @Test(expected = InvalidInputException.class)
+    public void testFindBuildingWithNullName() {
+        sut.findByName(null);
+    }
+
+    /**
+     * testFindAllBuildingsByBuildingOwnerId asserts that the result of findAllBuildingsByOwnerId in
+     * the service class returns the expected list of Building objects.
      */
     @Test
-    public void findBuildingByTrainingLead() {
+    public void testFindAllBuildingsByOwnerId() {
+
+        List<Building> expectedResult = new ArrayList<>();
+        expectedResult.add(new Building(1, "Muma School of Business", "MSB", new Address(),
+                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata()));
+
+        when(repo.findAll()).thenReturn(expectedResult);
+        List<Building> actualResult = sut.findAllBuildingsByOwnerId(1);
+
+        assertEquals(expectedResult, actualResult);
+    }
+
+    /**
+     * testFindAllBuildingsByInvalidOwnerId tests that an ID less than 1 returns
+     * an InvalidInputException.
+     */
+    @Test(expected = InvalidInputException.class)
+    public void testFindAllBuildingsByInvalidOwnerId() {
+        sut.findAllBuildingsByOwnerId(-2);
+    }
+
+    /**
+     * testFindAllBuildingsByOwnerIdEmptyList tests that when the service tries to
+     * return an empty list of Building objects, a ResourceNotFoundException occurs.
+     */
+    @Test(expected = ResourceNotFoundException.class)
+    public void testFindAllBuildingsByOwnerIdEmptyList() {
+        // setup empty list
+        List<Building> expectedResult = new ArrayList<>();
+
+        when(repo.findAll()).thenReturn(expectedResult);
+        List<Building> actualResult = sut.findAllBuildingsByOwnerId(1);
+
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testUpdateBuilding() {
+        Building building = new Building(1, "Muma School of Business", "MSB", new Address(),
+                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
+        sut.save(building);
+        Building updatedBuilding = new Building("Muma School of Business", "MSB", new Address(),
+                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
+        when(repo.save(updatedBuilding)).thenReturn(updatedBuilding);
+        assertEquals(sut.update(updatedBuilding), updatedBuilding);
+    }
+
+    @Test(expected = InvalidInputException.class)
+    public void testUpdateWithNullBuilding() {
+        sut.update(null);
+    }
+
+    /**
+     * testFindBuildingByTrainingLead() returns an object containing the same trainer id as the one provided.
+     */
+    @Test
+    public void testFindBuildingByTrainingLead() {
         Building expectedResult = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
 
@@ -148,29 +215,29 @@ public class BuildingServiceTest {
     }
 
     /**
-     * findBuildingByTrainingLeadInvalidId() throws an InvalidInputException when the provided id is less than or equal to zero.
+     * testFindBuildingByTrainingLeadInvalidId() throws an InvalidInputException when the provided id is less than or equal to zero.
      */
     @Test(expected = InvalidInputException.class)
-    public void findBuildingByTrainingLeadInvalidId() {
+    public void testFindBuildingByTrainingLeadInvalidId() {
         Building actualResult = sut.findByTrainingLeadId(0);
     }
 
     /**
-     * findBuildingByTrainingLeadIdNotPresent() throws a ResourceNotFoundException when provided a trainer id
+     * testFindBuildingByTrainingLeadIdNotPresent() throws a ResourceNotFoundException when provided a trainer id
      * that is a correct value but is not associated with any buildings.
      */
     @Test(expected = ResourceNotFoundException.class)
-    public void findBuildingByTrainingLeadIdNotPresent() {
+    public void testFindBuildingByTrainingLeadIdNotPresent() {
         when(repo.findByTrainingLead(Mockito.any())).thenReturn(null);
         Building actualResult = sut.findByTrainingLeadId(100);
     }
 
     /**
-     * findBuildingWithValidNameUsingAbbreviatedName() returns the object containing the same abbreviated building name
+     * testFindBuildingWithValidNameUsingAbbreviatedName() returns the object containing the same abbreviated building name
      * as the one provided.
      */
     @Test
-    public void findBuildingWithValidNameUsingAbbreviatedName() {
+    public void testFindBuildingWithValidNameUsingAbbreviatedName() {
         String name = "MSB";
         Building expectedResult = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
@@ -207,7 +274,6 @@ public class BuildingServiceTest {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
 
-        when(repo.findById(Mockito.any())).thenReturn(Optional.of(testBuilding));
         sut.delete(testBuilding.getId());
         verify(repo, times(1)).deleteById(testBuilding.getId());
     }
@@ -220,7 +286,6 @@ public class BuildingServiceTest {
     public void testDeleteWithInvalidId() {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());
-        when(repo.findById(Mockito.any())).thenReturn(Optional.of(testBuilding));
         sut.delete(-24);
         verify(repo, times(0)).deleteById(-24);
     }

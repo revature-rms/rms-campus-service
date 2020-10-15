@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 //import org.springframework.data.mongodb.core.mapping.Document;
+import com.revature.rms.core.metadata.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -13,28 +14,14 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
-//@Document
-
-//commentted out bc mangodb
-//@AllArgsConstructor
-//@NoArgsConstructor
 /**
  * POJO for the campus object. The annotations:
  * @Data handles the getter and setter methods for each field
- * @Document handles the mapping to the database
- * @ToString handles the HashCode and ToString
- * @AllArgsConstructor handles the all arguments constructor
- * @NoArgsConstructor handles the no arguments constructor
  * @Id marks the selected field as a primary key
- * @NotNull ensures the field will cannot be null, all values except for abbrName are not null
- * @NotEmpty ensures the field will not be empty, buildings and corporateEmployees are ArrayLists so we dont' want these
- * fields to be empty either
  *
  * Lastly, we have a constructor containing every field except for the id.
  */
 @Data
-@ToString
 @Entity
 public class Campus {
 
@@ -42,45 +29,32 @@ public class Campus {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
-//    @NotNull
-    @Column(nullable=false,unique=true) //covert h2
+    @Column(nullable=false,unique=true)
     private String name;
 
-    @Column(nullable=false) //covert h2
+    @Column(nullable=false)
     private String abbrName;
 
-//    @NotNull
     @OneToOne
     @JoinColumn(nullable=false)
     private Address shippingAddress;
 
-//    @NotNull
     @Column(nullable=false)
     private int trainingManagerId;
 
-//    @NotNull
     @Column(nullable=false)
     private int stagingManagerId;
 
-//    @NotNull
     @Column(nullable=false)
     private int hrLead;
 
-//    @NotNull
-//    @NotEmpty
     @OneToMany(mappedBy = "campus")
     private List<Building> buildings;
 
-//    @NotNull
-//    @NotEmpty
-
-//    @Column(nullable=false) //covert h2
     @ElementCollection
     private List<Integer> corporateEmployees;
 
-//    @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn
+    @Embedded
     private ResourceMetadata resourceMetadata;
 
     public Campus() {

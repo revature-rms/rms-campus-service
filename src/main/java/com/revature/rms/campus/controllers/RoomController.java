@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v2/room")
+@RequestMapping("/campuses/rooms") // service name/controller name
 public class RoomController {
 
     private RoomService roomService;
@@ -23,13 +23,6 @@ public class RoomController {
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
     }
-
-    /**
-     * getAllRooms method: Returns a list of all the room objects in the database.
-     * @return a list of all the rooms
-     */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Room> getAllRooms() { return roomService.findAll(); }
 
     /**
      * saveRoom method: Takes in a room object as the input.
@@ -45,11 +38,19 @@ public class RoomController {
     }
 
     /**
+     * getAllRooms method: Returns a list of all the room objects in the database.
+     * @return a list of all the rooms
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getAllRooms() { return roomService.findAll(); }
+
+
+    /**
      * getRoomById method: Returns a room object when the id int matches a record in the database.
      * @param id roomId int value
      * @return a room with matching id
      */
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Room getRoomById(@PathVariable int id) {
         if(id <= 0){
             throw new InvalidInputException();
@@ -67,7 +68,7 @@ public class RoomController {
      * @return List of rooms
      */
 
-    @GetMapping(value = "/owner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/owners/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getRoomByOwnerId(@PathVariable int id){
         return roomService.findByResourceOwner(id);
     }
@@ -86,12 +87,15 @@ public class RoomController {
      * deleteRoomById method: The room object is deleted based on its roomId int
      * @param id roomId int value
      */
-    @DeleteMapping(value = "/{id}")
-    public @ResponseStatus(code = HttpStatus.NO_CONTENT) void deleteRoomById(@PathVariable int id) {
+    @DeleteMapping(value = "/id/{id}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public boolean deleteRoomById(@PathVariable int id) {
         if(id <= 0){
             throw new InvalidInputException();
         }
-        roomService.delete(id);}
+        roomService.delete(id);
+        return true;
+    }
 
     /**
      * handleInvalidRequestException method: Exception handler method that provides the correct

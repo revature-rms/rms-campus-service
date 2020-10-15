@@ -2,19 +2,28 @@ package com.revature.rms.campus.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-//import org.springframework.data.mongodb.core.mapping.Document;
+import com.revature.rms.core.metadata.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 
-//@Document
+/**
+ * POJO for the building object. The annotations:
+ * @Data handles the getter and setter methods for each field
+ * @Document handles the mapping to the database
+ * @ToString handles the HashCode and ToString
+ * @AllArgsConstructor handles the all arguments constructor
+ * @NoArgsConstructor handles the no arguments constructor
+ * @Id marks the selected field as a primary key
+ * @NotNull ensures the field will cannot be null, all values except for abbrName are not null
+ * @NotEmpty ensures the field will not be empty, buildings and corporateEmployees are ArrayLists so we dont' want these
+ * fields to be empty either
+ *
+ * Lastly, we have a constructor containing every field except for the id.
+ */
 
-//commentted out bc mangodb
-//@NoArgsConstructor
-//@AllArgsConstructor
 @Entity
 @Data
 public class Building {
@@ -35,16 +44,13 @@ public class Building {
     @Column(nullable=false) //covert h2
     private int trainingLead;
 
-//    @NotNull
-//    @NotEmpty
     @OneToMany(mappedBy = "building")
     private List<Amenity> amenities;
 
     @OneToMany(mappedBy = "building")
     private List<Room> rooms;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn
+    @Embedded
     private ResourceMetadata resourceMetadata;
 
     @ManyToOne

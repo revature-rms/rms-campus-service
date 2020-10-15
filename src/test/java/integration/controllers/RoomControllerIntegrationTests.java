@@ -2,9 +2,9 @@ package integration.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.rms.campus.CampusServiceApplication;
-import com.revature.rms.campus.entities.ResourceMetadata;
 import com.revature.rms.campus.entities.Room;
 import com.revature.rms.campus.entities.RoomStatus;
+import com.revature.rms.core.metadata.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +71,7 @@ public class RoomControllerIntegrationTests {
     @Test
     public void testSaveRoomWithValidRoomExpecting200() throws Exception {
         Room testRoom = new Room("2301", 30, new ArrayList<RoomStatus>(1),
-                1, new ArrayList<Integer>(1), new ResourceMetadata(1, 1,"3.16.2020 10:00 PM", 1, "3.16.2020 10:00 PM", 1, true));
+                1, new ArrayList<Integer>(1), new ResourceMetadata());
         this.mvc.perform(post("/v2/room").content(asJSON(testRoom)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
@@ -88,7 +88,7 @@ public class RoomControllerIntegrationTests {
     @Test
     public void testGetRoomWithValidIdExpecting200() throws Exception {
         Room testRoom = new Room("2301", 30,
-                new ArrayList<RoomStatus>(5), 1, new ArrayList<Integer>(3), new ResourceMetadata(1, 1,"3.16.2020 10:00 PM", 1, "3.16.2020 10:00 PM", 1, true));
+                new ArrayList<RoomStatus>(5), 1, new ArrayList<Integer>(3), new ResourceMetadata());
         this.mvc.perform(post("/v2/room").content(asJSON(testRoom)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
         this.mvc.perform(get("/v2/room/{id}", 7).accept(MediaType.APPLICATION_JSON))
@@ -104,7 +104,7 @@ public class RoomControllerIntegrationTests {
     @Test
     public void testUpdateRoomWithValidRoomExpecting200() throws Exception{
         Room testRoom = new Room(1,"2301", 30,
-                new ArrayList<RoomStatus>(5), 1, new ArrayList<Integer>(3), new ResourceMetadata(1, 1,"3.16.2020 10:00 PM", 1, "3.16.2020 10:00 PM", 1, true));
+                new ArrayList<RoomStatus>(5), 1, new ArrayList<Integer>(3), new ResourceMetadata());
         this.mvc.perform(put("/v2/room").content(asJSON(testRoom)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }

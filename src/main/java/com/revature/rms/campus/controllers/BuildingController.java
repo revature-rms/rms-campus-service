@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v2/building")
+@RequestMapping("/campuses/buildings") // service name/controller name
 public class BuildingController {
 
     private BuildingService buildingService;
@@ -25,24 +25,6 @@ public class BuildingController {
     public BuildingController(BuildingService buildingService) {
         this.buildingService = buildingService;
     }
-
-    /**
-     * getAllBuildings method: Returns a list of all the building objects in the database.
-     * @return a list of all the buildings
-     */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Building> getAllBuildings() {
-        return buildingService.findAll();
-    }
-
-    /**
-     * getBuildingByTrainingLeadId method: Returns a building object
-     * that matches a trainingLeadId int id.
-     * @param id trainingLeadId int value
-     * @return a building with matching trainerLeadId
-     */
-    @GetMapping(value = "/trainer/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Building getBuildingByTrainingLeadId(@PathVariable int id) { return buildingService.findByTrainingLeadId(id); }
 
     /**
      * saveBuilding method: Takes in a building object as the input.
@@ -58,11 +40,20 @@ public class BuildingController {
     }
 
     /**
+     * getAllBuildings method: Returns a list of all the building objects in the database.
+     * @return a list of buildings
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Building> getAllBuildings() {
+        return buildingService.findAll();
+    }
+
+    /**
      * getBuildingById method: Returns a building object when the id int matches a record in the database.
      * @param id buildingId int value
      * @return a building with matching id
      */
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Building getBuildingById(@PathVariable int id) {
         if (id <= 0) {
             throw new InvalidInputException();
@@ -75,14 +66,23 @@ public class BuildingController {
     }
 
     /**
+     * getBuildingByTrainingLeadId method: Returns a building object
+     * that matches a trainingLeadId int id.
+     * @param id trainingLeadId int value
+     * @return a building with matching trainerLeadId
+     */
+    @GetMapping(value = "/trainers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Building getBuildingByTrainerId(@PathVariable int id) { return buildingService.findByTrainingLeadId(id); }
+
+    /**
      * getBuildingByOwnerId method: Retrieves a list of Building owned by a specific app user
      * @param id ID of the app user
      * @return List of buildings
      */
 
-    @GetMapping(value = "/owner/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/owners/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Building> getBuildingByOwnerId(@PathVariable Integer id){
-        return buildingService.findByBuildingOwnerId(id);
+        return buildingService.findAllBuildingsByOwnerId(id);
     }
 
     /**
@@ -100,7 +100,7 @@ public class BuildingController {
      * deleteBuildingById method: The building object is deleted based on its buildingId int
      * @param id buildingId int value
      */
-    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/id/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteBuildingById(@PathVariable int id) {
         if (id <= 0) {
             throw new InvalidInputException();

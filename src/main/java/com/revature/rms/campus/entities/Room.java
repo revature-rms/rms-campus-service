@@ -3,6 +3,7 @@ package com.revature.rms.campus.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 //import org.springframework.data.mongodb.core.mapping.Document;
+import com.revature.rms.core.metadata.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,8 +40,7 @@ public class Room {
     @ElementCollection
     private List<Integer> workOrders;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn
+    @Embedded
     private ResourceMetadata resourceMetadata;
 
     @ManyToOne

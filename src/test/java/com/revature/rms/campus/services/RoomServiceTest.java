@@ -1,11 +1,12 @@
 package com.revature.rms.campus.services;
 
-import com.revature.rms.campus.entities.ResourceMetadata;
 import com.revature.rms.campus.entities.Room;
 import com.revature.rms.campus.entities.RoomStatus;
 import com.revature.rms.campus.exceptions.InvalidInputException;
 import com.revature.rms.campus.exceptions.ResourceNotFoundException;
 import com.revature.rms.campus.repositories.RoomRepository;
+import com.revature.rms.campus.repositories.RoomStatusRepository;
+import com.revature.rms.core.metadata.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,32 +27,17 @@ public class RoomServiceTest {
 
     @Mock
     RoomRepository repo;
+    @Mock
+    RoomStatusRepository roomStatusRepository;
 
     @InjectMocks
     RoomService sut;
-
-    /**
-     * IMPORTANT NOTE: For some unknown reason, when the test suite is ran,
-     * an error which states: "Failed to Load ApplicationContext" may appear.
-     * We do not know what caused it but, sometimes it appears and sometimes
-     * the test suite runs perfectly well.
-     *
-     * In this test suite, we have 12 tests and all passed green. The only exception
-     * is the soft delete test method, as that have some issues.
-     */
-
-    /**
-     * RoomService.save() tests
-     * This method should call roomMongoRepository.save() and persist the data taken from the user to the database.
-     * Field value checks for a room object, are handled inside the Room POJO.
-     */
 
     /**
      * testSaveWithValidRoom() ensures RoonService.save() is functioning properly with the valid or correct input.
      * A non-null room object should be returned.
      */
     @Test
-    @Ignore
     public void testSaveWithValidRoom(){
         Room testRoom = new Room("2301", 25,  new ArrayList<RoomStatus>(5),
                 1612, new ArrayList<Integer>(3), new ResourceMetadata( 1,"3.16.2020 10:00 PM", 1, "3.16.2020 10:00 PM", 1, true));
@@ -85,11 +71,6 @@ public class RoomServiceTest {
         //Assert
         assertEquals(actualResult, expectedResult);
     }
-
-    /**
-     * RoomService.findAll() tests
-     * The method should call roomMongoRepository.findAll() to retrieve all Room objects from the database.
-     */
 
     /**
      * testFindAll() ensures RoomService().findAll() returns a list of all the existing Room objects.
@@ -129,6 +110,18 @@ public class RoomServiceTest {
     }
 
     /**
+     * testFindByInvalidRoomNumber ensures that findByRoomNumber throws an
+     * InvalidInputException when an invalid ID is entered.
+     */
+    @Test (expected = InvalidInputException.class)
+    public void testFindByInvalidRoomNumber() {
+        Optional<Room> expectedResult = Optional.of(new Room(23,"2304", 25,  new ArrayList<RoomStatus>(5),
+                1612, new ArrayList<Integer>(3), new ResourceMetadata()));
+
+        Optional<Room> actualResult = sut.findByRoomNumber("-100");
+    }
+
+    /**
      * findByRoomNumberWithValidRoomNumberNotFound() throws a ResourceNotFoundException when provided a room number
      * that is a correct value but is not associated with room numbers.
      */
@@ -139,31 +132,28 @@ public class RoomServiceTest {
     }
 
     /**
-     * testFindAllActiveRooms() returns a list of all active or available rooms.
+     * testFindByResourceOwner returns a list of Room objects where the resourceOwner's ID
+     * matches the int specified in the parameter of findByResourceOwner.
      */
-//    @Test
-//    public void testFindAllActiveRooms(){
-//        Room testRoom = new Room("23","2301", 25, true, new ArrayList<RoomStatus>(5),
-//                "1612", new ArrayList<String>(3), new ResourceMetadata());
-//
-//        List<Room> activeRoomList = new ArrayList<>();
-//        when(repo.findByActiveRooms(Mockito.anyBoolean())).thenReturn(activeRoomList);
-//        assertEquals(activeRoomList, sut.findAllActiveRooms(true));
-//    }
-//
+    @Test
+    public void testFindByResourceOwner() {
+        List<Room> rooms = new ArrayList<>();
+        rooms.add(new Room(23,"2304", 25,  new ArrayList<RoomStatus>(5),
+                1612, new ArrayList<Integer>(3), new ResourceMetadata()));
+
+        when(repo.findAll()).thenReturn(rooms);
+        assertEquals(rooms, sut.findByResourceOwner(1));
+
+    }
 
     /**
-     * testFindAllInActiveRooms() returns a list of all inactive rooms.
+     * testFindByResourceOwnerInvalidId returns an InvalidInputException when
+     * the ID is invalid.
      */
-//    @Test
-//    public void testFindAllInActiveRooms(){
-//        Room testRoom = new Room("2319", 35, false, new ArrayList<RoomStatus>(5),
-//                "2319", new ArrayList<String>(3), new ResourceMetadata());
-//
-//        List<Room> activeRoomList = new ArrayList<>();
-//        when(repo.findByActiveRooms(Mockito.anyBoolean())).thenReturn(activeRoomList);
-//        assertEquals(activeRoomList, sut.findAllActiveRooms(false));
-//    }
+    @Test (expected = InvalidInputException.class)
+    public void testFindByResourceOwnerInvalidId() {
+        sut.findByResourceOwner(-10);
+    }
 
     /**
      * testFindByIdWithValidId() ensures RoomService.findById() returns the object containing the same id as the one provided.
@@ -217,17 +207,19 @@ public class RoomServiceTest {
      * object already exists.
      */
     @Test
-    @Ignore
     public void testUpdateWithValidRoom(){
-        Room testRoom = new Room("2301", 25,  new ArrayList<RoomStatus>(5),
+        Room testRoom = new Room(1,"2301", 25,  new ArrayList<RoomStatus>(5),
                 1612, new ArrayList<Integer>(3), new ResourceMetadata());
 
-        Room expectedResult = new Room(1,"2301", 25,  new ArrayList<RoomStatus>(5),
+        Room expectedResult = new Room("2301", 25,  new ArrayList<RoomStatus>(5),
                 1612, new ArrayList<Integer>(3), new ResourceMetadata());
 
+        when(repo.findById(testRoom.getId())).thenReturn(Optional.of(expectedResult));
         when(repo.save(Mockito.any())).thenReturn(expectedResult);
-        Room actualResults = sut.update(testRoom);
-        assertEquals(actualResults, expectedResult);
+
+        testRoom.setRoomNumber("2302"); // was 2301
+
+        assertEquals(sut.update(testRoom), expectedResult);
     }
 
     /**
@@ -235,17 +227,16 @@ public class RoomServiceTest {
      *
      * testDeleteWithValidId() returns an updated room object. This method retrieves the specific room object byt its id,
      * then it sets the active field to false. The changed room object is saved or updated and returned to us.
-     *
-     * Currently, this test is a work in progress as it fails every time it is ran. Therefore we ignored it due to time constraint.
      */
+    @Test
     @Ignore
     public void testDeleteWithValidId(){
-        Room testRoom = new Room("2301", 25,  new ArrayList<RoomStatus>(5),
+        Room testRoom = new Room(1,"2301", 25,  new ArrayList<RoomStatus>(5),
                 1612, new ArrayList<Integer>(3), new ResourceMetadata());
 
-        when(repo.save(Mockito.any())).thenReturn(Optional.of(testRoom));
-        sut.delete(25);
-        verify(repo, times(1)).deleteById(25);
+        when(repo.findById(1)).thenReturn(Optional.of(testRoom));
+
+        assertEquals(testRoom, sut.delete(1));
     }
 
     /**
@@ -259,6 +250,50 @@ public class RoomServiceTest {
 
         sut.delete(-1);
         verify(repo, times(1)).deleteById(-1);
+    }
+
+    /**
+     * testFindAllStatusBySubmitter ensures that findAllStatusBySubmitter returns a list of RoomStatus objects
+     */
+    @Test
+    public void testFindAllStatusBySubmitter() {
+        List<RoomStatus> roomStatuses = new ArrayList<>();
+        when(roomStatusRepository.findAllBySubmitterId(1)).thenReturn(roomStatuses);
+        assertEquals(roomStatuses, sut.findAllStatusBySubmitter(1));
+    }
+
+    /**
+     * testFindAllStatusByDate ensures that findAllStatusByDate returns a list of RoomStatus objects
+     */
+    @Test
+    public void testFindAllStatusByDate() {
+        List<RoomStatus> roomStatuses = new ArrayList<>();
+        String date = "1/6/2020";
+        when(roomStatusRepository.findAllBySubmittedDateTime(date)).thenReturn(roomStatuses);
+        assertEquals(roomStatuses, sut.findAllStatusByDate(date));
+    }
+
+    /**
+     * testFindStatusById ensures that findStatusById returns an Optional of
+     * a RoomStatus object.
+     */
+    @Test
+    public void testFindStatusById() {
+
+        Optional<RoomStatus> _roomStatus = Optional.of(new RoomStatus());
+        when(roomStatusRepository.findById(1)).thenReturn(_roomStatus);
+        assertEquals(_roomStatus, sut.findStatusById(1));
+    }
+
+    /**
+     * testFindAllStatus ensures that findAllStatus returns a list of
+     * RoomStatus objects.
+     */
+    @Test
+    public void testFindAllStatus() {
+        List<RoomStatus> roomStatuses = new ArrayList<>();
+        when(roomStatusRepository.findAll()).thenReturn(roomStatuses);
+        assertEquals(roomStatuses, sut.findAllStatus());
     }
 
 }
