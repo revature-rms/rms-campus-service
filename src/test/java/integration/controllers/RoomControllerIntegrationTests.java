@@ -81,18 +81,19 @@ public class RoomControllerIntegrationTests {
      * This tests RoomController.getRoomById. The method is supposed to get the test room as a JSON object by using the
      * id provided when it hitting the URI. However, it is currently throwing a 400 - java.lang.AssertionError : Status
      * This test was implemented later in development and more time is needed to figure out what is causing the issue
+     * FIXED
      * @throws Exception from perform()
      */
-    @Ignore
+
     @Test
     public void testGetRoomWithValidIdExpecting200() throws Exception {
         Room testRoom = new Room("2301", 30,
                 new ArrayList<RoomStatus>(5), 1, new ArrayList<Integer>(3), new ResourceMetadata(1, 1,"3.16.2020 10:00 PM", 1, "3.16.2020 10:00 PM", 1, true));
         this.mvc.perform(post("/v2/room").content(asJSON(testRoom)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
-        this.mvc.perform(get("/v2/room/{id}", "2301").accept(MediaType.APPLICATION_JSON))
+        this.mvc.perform(get("/v2/room/{id}", 7).accept(MediaType.APPLICATION_JSON))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(2301));
+                .andExpect(jsonPath("$.id").value(7));
     }
 
     /**
