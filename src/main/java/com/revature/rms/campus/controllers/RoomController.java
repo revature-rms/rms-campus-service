@@ -1,9 +1,7 @@
 package com.revature.rms.campus.controllers;
 
-import com.revature.rms.campus.entities.ErrorResponse;
 import com.revature.rms.campus.entities.Room;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
+import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +51,7 @@ public class RoomController {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Room getRoomById(@PathVariable int id) {
         if(id <= 0){
-            throw new InvalidInputException();
+            throw new InvalidRequestException();
         }
         Optional<Room> _room = roomService.findById(id);
         if(!_room.isPresent()){
@@ -91,41 +89,41 @@ public class RoomController {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public boolean deleteRoomById(@PathVariable int id) {
         if(id <= 0){
-            throw new InvalidInputException();
+            throw new InvalidRequestException();
         }
         roomService.delete(id);
         return true;
     }
 
-    /**
-     * handleInvalidRequestException method: Exception handler method that provides the correct
-     * error response based on a InvalidInputException
-     * @param e InvalidInputException where input from user is invalid
-     * @return ErrorResponse that provides status, message, and timestamp of the exception
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequestException(InvalidInputException e) {
-        ErrorResponse err = new ErrorResponse();
-        err.setMessage(e.getMessage());
-        err.setTimestamp(System.currentTimeMillis());
-        err.setStatus(400);
-        return err;
-    }
-
-    /**
-     * handleResourceNotFoundException method: Exception handler method that provides the correct
-     * error response based on a ResourceNotFoundException
-     * @param e ResourceNotFoundException where a resource is not found in the database
-     * @return ErrorResponse that provides status, message, and timestamp of the exception
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
-        ErrorResponse err = new ErrorResponse();
-        err.setMessage(e.getMessage());
-        err.setTimestamp(System.currentTimeMillis());
-        err.setStatus(401);
-        return err;
-    }
+//    /**
+//     * handleInvalidRequestException method: Exception handler method that provides the correct
+//     * error response based on a InvalidRequestException
+//     * @param e InvalidRequestException where input from user is invalid
+//     * @return ErrorResponse that provides status, message, and timestamp of the exception
+//     */
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleInvalidRequestException(InvalidRequestException e) {
+//        ErrorResponse err = new ErrorResponse();
+//        err.setMessage(e.getMessage());
+//        err.setTimestamp(System.currentTimeMillis());
+//        err.setStatus(400);
+//        return err;
+//    }
+//
+//    /**
+//     * handleResourceNotFoundException method: Exception handler method that provides the correct
+//     * error response based on a ResourceNotFoundException
+//     * @param e ResourceNotFoundException where a resource is not found in the database
+//     * @return ErrorResponse that provides status, message, and timestamp of the exception
+//     */
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
+//        ErrorResponse err = new ErrorResponse();
+//        err.setMessage(e.getMessage());
+//        err.setTimestamp(System.currentTimeMillis());
+//        err.setStatus(401);
+//        return err;
+//    }
 }

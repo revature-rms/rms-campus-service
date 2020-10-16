@@ -2,11 +2,10 @@ package com.revature.rms.campus.services;
 
 import com.revature.rms.campus.entities.Room;
 import com.revature.rms.campus.entities.RoomStatus;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
 import com.revature.rms.campus.repositories.RoomRepository;
 import com.revature.rms.campus.repositories.RoomStatusRepository;
 import com.revature.rms.core.metadata.*;
+import com.revature.rms.core.exceptions.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,10 +124,10 @@ public class RoomServiceTest {
     }
 
     /**
-     * This tests that an InvalidInputException is thrown if an
+     * This tests that an InvalidRequestException is thrown if an
      * invalid id is input.
      */
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testGetByIdFailed() {
         int id = 0;
         sut.findById(id);
@@ -154,21 +153,21 @@ public class RoomServiceTest {
     }
 
     /**
-     * This tests that an InvalidInputException is thrown if an invalid
+     * This tests that an InvalidRequestException is thrown if an invalid
      * value is entered as the room number.
      */
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testGetByRoomNumberNoRoom() {
-        when(sut.findByRoomNumber("")).thenThrow(InvalidInputException.class);
+        when(sut.findByRoomNumber("")).thenThrow(InvalidRequestException.class);
     }
 
     /**
-     * This tests that an InvalidInputException is thrown if the number parsed
+     * This tests that an InvalidRequestException is thrown if the number parsed
      * is invalid.
      */
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testGetByRoomNumberParseError() {
-        when(sut.findByRoomNumber("0")).thenThrow(InvalidInputException.class);
+        when(sut.findByRoomNumber("0")).thenThrow(InvalidRequestException.class);
     }
 
     /**
@@ -201,10 +200,10 @@ public class RoomServiceTest {
     }
 
     /**
-     * Tests that an InvalidInputException is thrown if an
+     * Tests that an InvalidRequestException is thrown if an
      * invalid id is entered as a value.
      */
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testGetByResourceOwnerFailed() {
         int id = 0;
         sut.findByResourceOwner(id);
@@ -241,10 +240,10 @@ public class RoomServiceTest {
     }
 
     /**
-     * Tests that an InvalidInputException is thrown if a user tries to delete
+     * Tests that an InvalidRequestException is thrown if a user tries to delete
      * a Room with an invalid id.
      */
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testDeactivateRoomFailed() {
         int id = 0;
         sut.delete(id);

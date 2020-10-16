@@ -1,17 +1,13 @@
 package com.revature.rms.campus.controllers;
 
 import com.revature.rms.campus.entities.*;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
 import com.revature.rms.campus.services.CampusService;
+import com.revature.rms.core.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/campuses/campuses") // service name/controller name
@@ -32,7 +28,7 @@ public class CampusController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Campus saveCampus(@RequestBody Campus campus) {
         if (campus == null) {
-            throw new ResourceNotFoundException();
+            throw new InvalidRequestException();
         }
         return campusService.save(campus);
     }
@@ -52,7 +48,7 @@ public class CampusController {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Campus getCampusById(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidRequestException("Invalid Campus Id");
         }
         Campus campus = campusService.findById(id);
 
@@ -68,11 +64,11 @@ public class CampusController {
     @GetMapping(value = "/training-managers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Campus> getCampusByTrainingManagerId(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidRequestException("Invalid Trainer Id");
         }
         List<Campus> campus = campusService.findByTrainingManagerId(id);
         if (campus == null) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("No Campuses Found.");
         }
         return campus;
     }
@@ -86,11 +82,11 @@ public class CampusController {
     @GetMapping(value = "/staging-managers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Campus> getCampusByStagingManagerId(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidRequestException("Invalid Manager Id");
         }
         List<Campus> campus = campusService.findByStagingManagerId(id);
         if (campus == null) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("No Campuses Found.");
         }
         return campus;
     }
@@ -122,41 +118,41 @@ public class CampusController {
     @DeleteMapping(value = "/id/{id}")
     public boolean deleteCampusById(@PathVariable int id) {
         if(id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidRequestException("Invalid Campus Id");
         }
         campusService.delete(id);
         return true;
     }
 
-    /**
-     * handleInvalidRequestException method: Exception handler method that provides the correct
-     * error response based on a InvalidInputException
-     * @param e InvalidInputException where input from user is invalid
-     * @return ErrorResponse that provides status, message, and timestamp of the exception
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequestException(InvalidInputException e) {
-        ErrorResponse err = new ErrorResponse();
-        err.setMessage(e.getMessage());
-        err.setTimestamp(System.currentTimeMillis());
-        err.setStatus(400);
-        return err;
-    }
-
-    /**
-     * handleResourceNotFoundException method: Exception handler method that provides the correct
-     * error response based on a ResourceNotFoundException
-     * @param e ResourceNotFoundException where a resource is not found in the database
-     * @return ErrorResponse that provides status, message, and timestamp of the exception
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
-        ErrorResponse err = new ErrorResponse();
-        err.setMessage(e.getMessage());
-        err.setTimestamp(System.currentTimeMillis());
-        err.setStatus(401);
-        return err;
-    }
+//    /**
+//     * handleInvalidRequestException method: Exception handler method that provides the correct
+//     * error response based on a InvalidRequestException
+//     * @param e InvalidRequestException where input from user is invalid
+//     * @return ErrorResponse that provides status, message, and timestamp of the exception
+//     */
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleInvalidRequestException(InvalidRequestException e) {
+//        ErrorResponse err = new ErrorResponse();
+//        err.setMessage(e.getMessage());
+//        err.setTimestamp(String.valueOf(System.currentTimeMillis()));
+//        err.setStatus(400);
+//        return err;
+//    }
+//
+//    /**
+//     * handleResourceNotFoundException method: Exception handler method that provides the correct
+//     * error response based on a ResourceNotFoundException
+//     * @param e ResourceNotFoundException where a resource is not found in the database
+//     * @return ErrorResponse that provides status, message, and timestamp of the exception
+//     */
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
+//        ErrorResponse err = new ErrorResponse();
+//        err.setMessage(e.getMessage());
+//        err.setTimestamp(System.currentTimeMillis());
+//        err.setStatus(401);
+//        return err;
+//    }
 }

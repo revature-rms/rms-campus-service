@@ -2,16 +2,13 @@ package com.revature.rms.campus.services;
 
 import com.revature.rms.campus.entities.*;
 import com.revature.rms.core.metadata.*;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
-import com.revature.rms.campus.exceptions.ResourcePersistenceException;
-//import com.revature.rms.campus.repositories.BuildingMongoRepository;
+import com.revature.rms.core.exceptions.*;
+
 import com.revature.rms.campus.repositories.BuildingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +64,7 @@ public class BuildingService {
     public Optional<Building> findById(int id) {
 
         if (id <= 0) {
-            throw new InvalidInputException("Id cannot be less than or equal to zero!");
+            throw new InvalidRequestException("Id cannot be less than or equal to zero!");
         }
 
         Optional<Building> theBuilding = buildingRepository.findById(id);
@@ -87,7 +84,7 @@ public class BuildingService {
     @Transactional(readOnly = true)
     public Building findByName(String name) {
         if (name == null) {
-            throw new InvalidInputException("Null value entered for name!");
+            throw new InvalidRequestException("Null value entered for name!");
         }
         return buildingRepository.findByName(name);
     }
@@ -102,7 +99,7 @@ public class BuildingService {
     public List<Building> findAllBuildingsByOwnerId(Integer id){
 
         if(id <= 0){
-            throw new InvalidInputException("Id cannot be less than or equal to zero!");
+            throw new InvalidRequestException("Id cannot be less than or equal to zero!");
         }
         Iterable<Building> allBuildings = buildingRepository.findAll();
         List<Building> buildings = new ArrayList<Building>();
@@ -129,7 +126,7 @@ public class BuildingService {
     public Building update(Building building) {
 
         if (building == null) {
-            throw new InvalidInputException("Null value entered for building!");
+            throw new InvalidRequestException("Null value entered for building!");
         }
         return buildingRepository.save(building);
     }
@@ -144,7 +141,7 @@ public class BuildingService {
     public void delete(int id) {
 
         if (id <= 0) {
-            throw new InvalidInputException("Id cannot be less than or equal to zero!");
+            throw new InvalidRequestException("Id cannot be less than or equal to zero!");
         }
         buildingRepository.deleteById(id);
     }
@@ -157,7 +154,7 @@ public class BuildingService {
      */
     @Transactional(readOnly = true)
     public Building findByTrainingLeadId(int id) {
-        if (id <= 0) throw new InvalidInputException("Id cannot be less than or equal to zero!");
+        if (id <= 0) throw new InvalidRequestException("Id cannot be less than or equal to zero!");
         Building temp = buildingRepository.findByTrainingLead(id);
         if (temp == null) throw new ResourceNotFoundException("No training lead found!");
         else return temp;

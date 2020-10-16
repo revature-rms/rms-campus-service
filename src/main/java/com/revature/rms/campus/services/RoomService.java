@@ -3,8 +3,7 @@ package com.revature.rms.campus.services;
 import com.revature.rms.campus.entities.Room;
 import com.revature.rms.campus.entities.RoomStatus;
 import com.revature.rms.core.metadata.*;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
+import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.repositories.RoomRepository;
 import com.revature.rms.campus.repositories.RoomStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +70,7 @@ public class RoomService {
     @Transactional(readOnly = true)
     public Optional<Room> findById(int id){
         if (id <= 0) {
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
 
         Optional<Room> _room = roomRepository.findById(id);
@@ -92,7 +91,7 @@ public class RoomService {
     @Transactional(readOnly = true)
     public Optional<Room> findByRoomNumber(String roomNum){
         if (roomNum.isEmpty() || (Integer.parseInt(roomNum) <= 0)) {
-            throw new InvalidInputException("Room number cannot be less than or equal to zero!");
+            throw new InvalidRequestException("Room number cannot be less than or equal to zero!");
         }
 
         Optional<Room> _room = roomRepository.findByRoomNumber(roomNum);
@@ -126,7 +125,7 @@ public class RoomService {
     @Transactional
     public List<Room> findByResourceOwner(Integer id){
         if(id <= 0){
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
         Iterable<Room> allRooms = roomRepository.findAll();
         List<Room> rooms = new ArrayList<Room>();
@@ -166,7 +165,7 @@ public class RoomService {
      *
      * The method takes in the room id. The input is tested to ensure
      * that it is not empty, negative or zero. if the input is empty,
-     * negative or zero, an InvalidInputException is thrown.
+     * negative or zero, an InvalidRequestException is thrown.
      *
      * The room id is used to retrieve the specific room object. The
      * active parameter of the retrieved room object is set to false
@@ -177,7 +176,7 @@ public class RoomService {
     @Transactional
     public Room delete(int id){
         if (id <= 0) {
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
         Room deactivateRoom = roomRepository.findById(id).get();
         return update(deactivateRoom);

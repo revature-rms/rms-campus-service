@@ -4,9 +4,7 @@ package com.revature.rms.campus.services;
 import com.revature.rms.campus.entities.Address;
 import com.revature.rms.campus.entities.Campus;
 import com.revature.rms.core.metadata.*;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
-import com.revature.rms.campus.exceptions.ResourcePersistenceException;
+import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.repositories.AddressRepository;
 import com.revature.rms.campus.repositories.CampusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,7 @@ public class CampusService {
     @Transactional
     public Campus save(Campus campus) {
         if (campus == null) {
-            throw new ResourcePersistenceException("Cannot save null campus!");
+            throw new InvalidRequestException("Cannot save null campus!");
         }
 
         Address address = addressRepository.save(campus.getShippingAddress());
@@ -70,7 +68,7 @@ public class CampusService {
     public Campus findById(int id) {
 
         if (id <= 0) {
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
 
         Optional<Campus> _campus = campusRepository.findById(id);
@@ -90,7 +88,7 @@ public class CampusService {
     @Transactional(readOnly = true)
     public List<Campus> findByTrainingManagerId(Integer id) {
         if (id <= 0) {
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
       
         List<Campus> campus = campusRepository.findByTrainingManagerId(id);
@@ -108,7 +106,7 @@ public class CampusService {
     @Transactional(readOnly = true)
     public List<Campus> findByStagingManagerId(Integer id) {
         if (id <= 0) {
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
 
         List<Campus> campus = campusRepository.findByStagingManagerId(id);
@@ -127,7 +125,7 @@ public class CampusService {
     public List<Campus> findByResourceOwnerId(Integer id){
 
         if(id <= 0){
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
         Iterable<Campus> allCampuses = campusRepository.findAll();
         List<Campus> campuses = new ArrayList<Campus>();
@@ -153,7 +151,7 @@ public class CampusService {
     public Campus findByName(String name) {
 
         if (name == null || name == "") {
-            throw new InvalidInputException("Name cannot be null or empty!");
+            throw new InvalidRequestException("Name cannot be null or empty!");
         }
 
         return campusRepository.findByName(name);
@@ -170,7 +168,7 @@ public class CampusService {
     public Campus update(Campus campus) {
 
         if (campus == null) {
-            throw new InvalidInputException("Campus cannot be null!");
+            throw new InvalidRequestException("Campus cannot be null!");
         }
 
         return campusRepository.save(campus);
@@ -186,7 +184,7 @@ public class CampusService {
     public boolean delete(int id) {
 
         if (id <= 0) {
-            throw new InvalidInputException("ID cannot be less than or equal to zero!");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
         Campus campus = campusRepository.findById(id).get();
         campusRepository.deleteById(campus.getId());

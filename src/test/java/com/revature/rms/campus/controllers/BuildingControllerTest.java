@@ -1,7 +1,6 @@
 package com.revature.rms.campus.controllers;
 import com.revature.rms.campus.entities.*;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
+import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.services.BuildingService;
 import com.revature.rms.core.metadata.ResourceMetadata;
 import org.junit.Test;
@@ -62,10 +61,10 @@ public class BuildingControllerTest {
         assertEquals(buildingController.getBuildingByTrainerId(id), testBuilding);
     }
 
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testFindBuildingByInvalidTrainingLeadId() {
         int id=-2;
-        when(buildingService.findByTrainingLeadId(Mockito.anyInt())).thenThrow(new InvalidInputException());
+        when(buildingService.findByTrainingLeadId(Mockito.anyInt())).thenThrow(new InvalidRequestException());
         buildingController.getBuildingByTrainerId(id);
     }
 
@@ -131,7 +130,7 @@ public class BuildingControllerTest {
         buildingController.getBuildingById(id);
     }
 
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testGetBuildingWithInvalidBuilding() {
 
         int id = 0;
@@ -151,14 +150,14 @@ public class BuildingControllerTest {
         assertEquals(buildingController.getBuildingByOwnerId(id), result);
     }
 
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testFindBuildingByInvalidOwnerId() {
         int id = -1;
         Building expectedResult = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(), new ArrayList<Room>(), new ResourceMetadata());
         List<Building> result = new ArrayList<>();
         result.add(expectedResult);
-        when(buildingService.findAllBuildingsByOwnerId(Mockito.anyInt())).thenThrow(new InvalidInputException());
+        when(buildingService.findAllBuildingsByOwnerId(Mockito.anyInt())).thenThrow(new InvalidRequestException());
         assertEquals(buildingController.getBuildingByOwnerId(id), result);
     }
 
@@ -183,7 +182,7 @@ public class BuildingControllerTest {
         verify(buildingService, times(1)).delete(id);
     }
 
-    @Test(expected = InvalidInputException.class)
+    @Test(expected = InvalidRequestException.class)
     public void testDeleteBuildingWithInvalidId() {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3), new ResourceMetadata());

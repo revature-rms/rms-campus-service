@@ -2,11 +2,9 @@ package com.revature.rms.campus.controllers;
 
 
 import com.revature.rms.campus.entities.Building;
-import com.revature.rms.campus.entities.Campus;
-import com.revature.rms.campus.entities.ErrorResponse;
-import com.revature.rms.campus.exceptions.InvalidInputException;
-import com.revature.rms.campus.exceptions.ResourceNotFoundException;
+import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.services.BuildingService;
+import dto.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,7 +54,7 @@ public class BuildingController {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Building getBuildingById(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidRequestException();
         }
         Optional<Building> _building = buildingService.findById(id);
         if (!_building.isPresent()) {
@@ -103,40 +101,40 @@ public class BuildingController {
     @DeleteMapping(value = "/id/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteBuildingById(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidInputException();
+            throw new InvalidRequestException();
         }
         buildingService.delete(id);
     }
 
-    /**
-     * handleInvalidRequestException method: Exception handler method that provides the correct
-     * error response based on a InvalidInputException
-     * @param e InvalidInputException where input from user is invalid
-     * @return ErrorResponse that provides status, message, and timestamp of the exception
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidRequestException(InvalidInputException e) {
-        ErrorResponse err = new ErrorResponse();
-        err.setMessage(e.getMessage());
-        err.setTimestamp(System.currentTimeMillis());
-        err.setStatus(400);
-        return err;
-    }
-
-    /**
-     * handleResourceNotFoundException method: Exception handler method that provides the correct
-     * error response based on a ResourceNotFoundException
-     * @param e ResourceNotFoundException where a resource is not found in the database
-     * @return ErrorResponse that provides status, message, and timestamp of the exception
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
-        ErrorResponse err = new ErrorResponse();
-        err.setMessage(e.getMessage());
-        err.setTimestamp(System.currentTimeMillis());
-        err.setStatus(401);
-        return err;
-    }
+//    /**
+//     * handleInvalidRequestException method: Exception handler method that provides the correct
+//     * error response based on a InvalidRequestException
+//     * @param e InvalidRequestException where input from user is invalid
+//     * @return ErrorResponse that provides status, message, and timestamp of the exception
+//     */
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleInvalidRequestException(InvalidRequestException e) {
+//        ErrorResponse err = new ErrorResponse();
+//        err.setMessage(e.getMessage());
+//        err.setTimestamp("Time now");
+//        err.setStatusCode(400);
+//        return err;
+//    }
+//
+//    /**
+//     * handleResourceNotFoundException method: Exception handler method that provides the correct
+//     * error response based on a ResourceNotFoundException
+//     * @param e ResourceNotFoundException where a resource is not found in the database
+//     * @return ErrorResponse that provides status, message, and timestamp of the exception
+//     */
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
+//        ErrorResponse err = new ErrorResponse();
+//        err.setMessage(e.getMessage());
+//        err.setTimestamp(System.currentTimeMillis());
+//        err.setStatus(401);
+//        return err;
+//    }
 }
