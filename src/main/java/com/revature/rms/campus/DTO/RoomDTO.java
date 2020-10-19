@@ -1,9 +1,9 @@
 package com.revature.rms.campus.DTO;
 
-import com.revature.rms.campus.entities.ResourceMetadata;
 import com.revature.rms.campus.entities.Room;
 import com.revature.rms.campus.entities.RoomStatus;
 import lombok.Data;
+import com.revature.rms.core.metadata.*;
 
 import java.util.List;
 

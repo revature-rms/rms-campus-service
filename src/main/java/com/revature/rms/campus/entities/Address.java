@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Entity
 @Data
 public class Address {
-    
+
     @Id
     @Column
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -53,5 +53,16 @@ public class Address {
         this.state = state;
         this.zip = zip;
         this.country = country;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "unitStreet='" + unitStreet + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", zip='" + zip + '\'' +
+                ", country='" + country + '\'' +
+                '}';
     }
 }
