@@ -4,9 +4,7 @@ package com.revature.rms.campus.controllers;
 import com.revature.rms.campus.entities.Building;
 import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.services.BuildingService;
-import dto.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 

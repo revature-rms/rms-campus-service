@@ -43,4 +43,11 @@ public class Amenity {
         this.type = type;
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Amenity{" +
+                "id=" + id +
+                ", type=" + type + '}';
+    }
 }

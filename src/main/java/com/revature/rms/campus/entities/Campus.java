@@ -1,16 +1,10 @@
 package com.revature.rms.campus.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-//import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.revature.rms.core.metadata.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +17,7 @@ import java.util.List;
  */
 @Data
 @Entity
-public class Campus {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+public class Campus extends Resource{
 
     @Column(nullable=false,unique=true)
     private String name;
@@ -54,13 +44,10 @@ public class Campus {
     @ElementCollection
     private List<Integer> corporateEmployees;
 
-    @Embedded
-    private ResourceMetadata resourceMetadata;
-
     public Campus() {
     }
 
-    public Campus(int id, String name, String abbrName, Address shippingAddress, int trainingManagerId, int stagingManagerId, int hrLead, ArrayList<Building> buildings, ArrayList<Integer> corporateEmployees, ResourceMetadata resourceMetadata) {
+    public Campus(int id, String name, String abbrName, Address shippingAddress, int trainingManagerId, int stagingManagerId, int hrLead, ArrayList<Building> buildings, ArrayList<Integer> corporateEmployees) {
         this.id = id;
         this.name = name;
         this.abbrName = abbrName;
@@ -70,22 +57,9 @@ public class Campus {
         this.hrLead = hrLead;
         this.buildings = buildings;
         this.corporateEmployees = corporateEmployees;
-        this.resourceMetadata = resourceMetadata;
     }
 
-    public Campus(String name, String abbrName, Address shippingAddress, int trainingManagerId, int stagingManagerId, int hrLead, ArrayList<Building> buildings, ArrayList<Integer> corporateEmployees, ResourceMetadata resourceMetadata) {
-        this.name = name;
-        this.abbrName = abbrName;
-        this.shippingAddress = shippingAddress;
-        this.trainingManagerId = trainingManagerId;
-        this.stagingManagerId = stagingManagerId;
-        this.hrLead = hrLead;
-        this.buildings = buildings;
-        this.corporateEmployees = corporateEmployees;
-        this.resourceMetadata = resourceMetadata;
-    }
-
-    public Campus(int id, String name, String abbrName, Address shippingAddress, int trainingManagerId, int stagingManagerId, int hrLead, List<Integer> corporateEmployees, ResourceMetadata resourceMetadata) {
+    public Campus(int id, String name, String abbrName, Address shippingAddress, int trainingManagerId, int stagingManagerId, int hrLead, List<Integer> corporateEmployees) {
         this.id = id;
         this.name = name;
         this.abbrName = abbrName;
@@ -94,15 +68,6 @@ public class Campus {
         this.stagingManagerId = stagingManagerId;
         this.hrLead = hrLead;
         this.corporateEmployees = corporateEmployees;
-        this.resourceMetadata = resourceMetadata;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -121,19 +86,24 @@ public class Campus {
         this.abbrName = abbrName;
     }
 
-    public ResourceMetadata getResourceMetadata() {
-        return resourceMetadata;
-    }
-
-    public void setResourceMetadata(ResourceMetadata resourceMetadata) {
-        this.resourceMetadata = resourceMetadata;
-    }
-
     public Address getShippingAddress() {
         return shippingAddress;
     }
 
     public void setShippingAddress(Address shippingAddress) {
         this.shippingAddress = shippingAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "Campus{" +
+                "name='" + name + '\'' +
+                ", abbrName='" + abbrName + '\'' +
+                ", shippingAddress=" + shippingAddress +
+                ", trainingManagerId=" + trainingManagerId +
+                ", stagingManagerId=" + stagingManagerId +
+                ", hrLead=" + hrLead +
+                ", corporateEmployees=" + corporateEmployees +
+                '}';
     }
 }

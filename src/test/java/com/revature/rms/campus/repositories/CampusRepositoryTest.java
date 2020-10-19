@@ -2,7 +2,9 @@ package com.revature.rms.campus.repositories;
 
 import com.revature.rms.campus.entities.Address;
 import com.revature.rms.campus.entities.Campus;
+import com.revature.rms.campus.entities.User;
 import com.revature.rms.core.metadata.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
@@ -24,47 +26,36 @@ public class CampusRepositoryTest {
     @Autowired
     private CampusRepository sut;
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        this.sut.deleteAll();
-    }
-
     @Test
     public void testFindByName() {
-        Campus campus = new Campus("University of Central Florida", "UCF",
-                new Address(1,"","","","",""),1,1,1,
-                new ArrayList<>(),new ArrayList<>(),
-                new ResourceMetadata());
-        sut.save(campus);
-        Campus campus1 = sut.findByName("University of Central Florida");
-        assertThat(campus1.getAbbrName()).isEqualTo(campus.getAbbrName());
-    }
 
-    @Test
-    public void testFindByStagingManagerId() {
-        Campus campus = new Campus("University", "USFT",
-                new Address(1,"","","","",""),1,7,1,
-                new ArrayList<>(),new ArrayList<>(),
-                new ResourceMetadata());
+        Campus result = sut.findByName("University of South Florida");
+        String actualName = result.getName();
 
-        sut.save(campus);
-        List<Campus> campusList = sut.findByStagingManagerId(7);
-
-        assertThat(campusList.size()).isEqualTo(1);
+        assertEquals("University of South Florida", actualName);
 
     }
 
     @Test
     public void testFindByTrainingManagerId() {
-        Campus campus = new Campus("University of Test", "USFTEST",
-                new Address(1,"","","","",""),4,7,1,
-                new ArrayList<>(),new ArrayList<>(),
-                new ResourceMetadata());
 
-        sut.save(campus);
-        List<Campus> campusList = sut.findByTrainingManagerId(4);
+        List<Campus> resultList = sut.findByTrainingManagerId(3);
+        Campus result = resultList.get(0);
+        int actualId = result.getTrainingManagerId();
 
-        assertThat(campusList.size()).isEqualTo(1);
+        assertEquals(3, actualId);
 
     }
+
+    @Test
+    public void testFindByStagingManagerId() {
+
+        List<Campus> resultList = sut.findByStagingManagerId(2);
+        Campus result = resultList.get(0);
+        int actualId = result.getStagingManagerId();
+
+        assertEquals(2, actualId);
+    }
+
+
 }

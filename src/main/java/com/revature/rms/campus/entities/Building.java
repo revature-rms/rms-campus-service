@@ -26,10 +26,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Building {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+public class Building extends Resource{
 
     @Column(nullable=false,unique=true) //covert h2
     private String name;
@@ -50,9 +47,6 @@ public class Building {
     @OneToMany(mappedBy = "building")
     private List<Room> rooms;
 
-    @Embedded
-    private ResourceMetadata resourceMetadata;
-
     @ManyToOne
     @JsonIgnore
     private Campus campus;
@@ -61,7 +55,7 @@ public class Building {
     public Building() {
     }
 
-    public Building(int id, String name, String abbrName, Address physicalAddress, int trainingLead, List<Amenity> amenities, List<Room> rooms, ResourceMetadata resourceMetadata) {
+    public Building(int id, String name, String abbrName, Address physicalAddress, int trainingLead, List<Amenity> amenities, List<Room> rooms) {
         this.id = id;
         this.name = name;
         this.abbrName = abbrName;
@@ -69,36 +63,15 @@ public class Building {
         this.trainingLead = trainingLead;
         this.amenities = amenities;
         this.rooms = rooms;
-        this.resourceMetadata = resourceMetadata;
     }
 
-    public Building(String name, String abbrName, Address physicalAddress, int trainingLead, List<Amenity> amenities, List<Room> rooms, ResourceMetadata resourceMetadata) {
+    public Building(String name, String abbrName, Address physicalAddress, int trainingLead, List<Amenity> amenities, Campus campus) {
         this.name = name;
         this.abbrName = abbrName;
         this.physicalAddress = physicalAddress;
         this.trainingLead = trainingLead;
         this.amenities = amenities;
-        this.rooms = rooms;
-        this.resourceMetadata = resourceMetadata;
-    }
-
-    public Building(int id, String name, String abbrName, Address physicalAddress, int trainingLead, List<Amenity> amenities, ResourceMetadata resourceMetadata, Campus campus) {
-        this.id = id;
-        this.name = name;
-        this.abbrName = abbrName;
-        this.physicalAddress = physicalAddress;
-        this.trainingLead = trainingLead;
-        this.amenities = amenities;
-        this.resourceMetadata = resourceMetadata;
         this.campus = campus;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getAbbrName() {
@@ -109,11 +82,13 @@ public class Building {
         this.abbrName = abbrName;
     }
 
-    public ResourceMetadata getResourceMetadata() {
-        return resourceMetadata;
-    }
-
-    public void setResourceMetadata(ResourceMetadata resourceMetadata) {
-        this.resourceMetadata = resourceMetadata;
+    @Override
+    public String toString() {
+        return "Building{" +
+                "name='" + name + '\'' +
+                ", abbrName='" + abbrName + '\'' +
+                ", physicalAddress=" + physicalAddress +
+                ", trainingLead=" + trainingLead +
+                '}';
     }
 }

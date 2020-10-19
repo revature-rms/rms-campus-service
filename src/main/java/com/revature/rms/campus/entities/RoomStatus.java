@@ -72,4 +72,15 @@ public class RoomStatus {
     public void setRoom(Room room) {
         this.room = room;
     }
+
+    @Override
+    public String toString() {
+        return "RoomStatus{" +
+                "id=" + id +
+                ", whiteBoardCleaned=" + whiteBoardCleaned +
+                ", chairsOrdered=" + chairsOrdered +
+                ", submittedDateTime='" + submittedDateTime + '\'' +
+                ", submitterId=" + submitterId +
+                ", otherNotes='" + otherNotes + '}';
+    }
 }
