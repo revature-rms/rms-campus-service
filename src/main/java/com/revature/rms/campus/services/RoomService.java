@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -153,8 +154,44 @@ public class RoomService {
         Room oldRoom;
         oldRoom = roomRepository.findById(room.getId()).get();
 
+
         room.setBuilding(oldRoom.getBuilding());
+        room.setCurrentStatus(oldRoom.getCurrentStatus()); // TODO append list of RoomStatuses by updated room's roomstatus
+        room.setWorkOrders(oldRoom.getWorkOrders());
+        room.setResourceMetadata(oldRoom.getResourceMetadata());
+        room.setBatchId(oldRoom.getBatchId());
+
+        room.getResourceMetadata().setLastModifiedDateTime(LocalDateTime.now().toString());
+        room.getResourceMetadata().setResourceCreator(oldRoom.getResourceMetadata().getResourceCreator());
+        room.getResourceMetadata().setResourceCreationDateTime(oldRoom.getResourceMetadata().getResourceCreationDateTime());
+        room.getResourceMetadata().setLastModifier(oldRoom.getResourceMetadata().getLastModifier());
+        room.getResourceMetadata().setResourceOwner(oldRoom.getResourceMetadata().getResourceOwner());
+        room.getResourceMetadata().setCurrentlyActive(oldRoom.getResourceMetadata().isCurrentlyActive());
+
         return roomRepository.save(room);
+    }
+
+    @Transactional
+    public Room updateRoomNumber(Room room) {
+
+        Room oldRoom;
+        oldRoom = roomRepository.findById(room.getId()).get();
+
+        room.setMaxOccupancy(oldRoom.getMaxOccupancy());
+        room.setCurrentStatus(oldRoom.getCurrentStatus()); // TODO append list of RoomStatuses by updated room's roomstatus
+        room.setBatchId(oldRoom.getBatchId());
+        room.setWorkOrders(oldRoom.getWorkOrders());
+        room.setBuilding(oldRoom.getBuilding());
+
+        room.setResourceMetadata(oldRoom.getResourceMetadata());
+        ResourceMetadata resourceMetadata = oldRoom.getResourceMetadata();
+
+        room.setResourceMetadata(resourceMetadata);
+        room.getResourceMetadata().setLastModifiedDateTime(LocalDateTime.now().toString());
+        // this should change every time an update is made
+
+        return roomRepository.save(room);
+
     }
 
     /**

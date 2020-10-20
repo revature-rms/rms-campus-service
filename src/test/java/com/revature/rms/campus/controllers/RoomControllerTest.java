@@ -4,11 +4,9 @@ import com.revature.rms.campus.entities.Room;
 import com.revature.rms.campus.entities.RoomStatus;
 import com.revature.rms.campus.entities.User;
 import com.revature.rms.campus.services.RoomService;
-import com.revature.rms.core.metadata.*;
 import com.revature.rms.core.exceptions.*;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,8 +33,6 @@ public class RoomControllerTest {
 
     List<Room> testRooms;
     List<User> testUsers;
-//    InvalidRequestException iie;
-//    ResourceNotFoundException rnfe;
 
     @Before
     public void setup() {
@@ -100,7 +96,6 @@ public class RoomControllerTest {
      * Tests that a user can retrieve a Room by its ID.
      */
     @Test
-    @Ignore
     public void testGetRoomById() {
         when(roomService.findById(testRooms.get(0).getId())).thenReturn(Optional.ofNullable(testRooms.get(0)));
         assertEquals(testRooms.get(0), roomController.getRoomById(testRooms.get(0).getId()));
@@ -143,11 +138,17 @@ public class RoomControllerTest {
         assertEquals(r4, roomController.updateRoom(testRooms.get(1)));
     }
 
+    @Test
+    public void testUpdateRoomNumber() {
+        Room r4 = new Room(4, "418", 30,  new ArrayList<RoomStatus>(5),123, new ArrayList<Integer>(2));
+        when(roomService.updateRoomNumber(testRooms.get(1))).thenReturn(r4);
+        assertEquals(r4, roomController.updateRoomNumber(testRooms.get(1)));
+    }
+
     /**
      * Tests that a Room can be deleted by its ID.
      */
     @Test
-    @Ignore
     public void testDeleteRoomById() {
         when(roomService.delete(testRooms.get(2).getId())).thenReturn(testRooms.get(2));
         assertTrue(roomController.deleteRoomById(testRooms.get(2).getId()));
@@ -162,21 +163,4 @@ public class RoomControllerTest {
         roomController.deleteRoomById(0);
     }
 
-//    /**
-//     * Tests that the InvalidRequestException handling functions properly.
-//     */
-//    @Test
-//    public void testHandleInvalidRequestException() {
-//        when(roomService.findByResourceOwner(100)).thenThrow(InvalidRequestException.class);
-//        assertNotNull(roomController.handleInvalidRequestException(iie));
-//    }
-//
-//    /**
-//     * Tests that the ResourceNotFoundException handling functions properly.
-//     */
-//    @Test
-//    public void testHandleResourceNotFoundException() {
-//        when(roomService.findByResourceOwner(1)).thenThrow(ResourceNotFoundException.class);
-//        assertNotNull(roomController.handleResourceNotFoundException(rnfe));
-//    }
 }

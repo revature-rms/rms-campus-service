@@ -3,10 +3,8 @@ package com.revature.rms.campus.controllers;
 import com.revature.rms.campus.entities.*;
 import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.services.CampusService;
-import com.revature.rms.core.metadata.*;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -115,7 +113,6 @@ public class CampusControllerTest {
      * Tests that a specific Campus can be retrieved by it's ID.
      */
     @Test
-    @Ignore
     public void testGetCampusById() {
         when(campusService.findById(testCampuses.get(1).getId())).thenReturn(testCampuses.get(1));
         assertEquals(testCampuses.get(1), campusController.getCampusById(testCampuses.get(1).getId()));
@@ -208,7 +205,6 @@ public class CampusControllerTest {
      * Tests that a Campus can be deleted by its ID.
      */
     @Test
-    @Ignore
     public void testDeleteCampusById() {
         when(campusService.delete(testCampuses.get(0).getId())).thenReturn(true);
         assertTrue(campusController.deleteCampusById(testCampuses.get(0).getId()));
@@ -221,25 +217,5 @@ public class CampusControllerTest {
     public void testDeleteCampusFailed() {
         campusController.deleteCampusById(0);
     }
-
-//    //************************************** EXCEPTIONS *******************************************************
-//
-//    /**
-//     * Tests that the InvalidRequestException is being used.
-//     */
-//    @Test
-//    public void testInvalidRequestException() {
-//        when(campusService.findByResourceOwnerId(100)).thenThrow(InvalidRequestException.class);
-//        assertNotNull(campusController.handleInvalidRequestException(iiTest));
-//    }
-//
-//    /**
-//     * Tests that the ResourceNotFoundException is being used.
-//     */
-//    @Test
-//    public void testHandleResourceNotFoundException() {
-//        when(campusService.delete(30)).thenThrow(ResourceNotFoundException.class);
-//        assertNotNull(campusController.handleResourceNotFoundException(rnfTest));
-//    }
 
 }

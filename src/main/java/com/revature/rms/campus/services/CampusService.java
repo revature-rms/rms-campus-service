@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,10 @@ public class CampusService {
     public Campus save(Campus campus) {
         if (campus == null) {
             throw new InvalidRequestException("Cannot save null campus!");
+        }
+
+        if(campusRepository.findByName(campus.getName()) != null) {
+            throw new ResourcePersistenceException("Campus with that name already exists");
         }
 
         Address address = addressRepository.save(campus.getShippingAddress());
@@ -93,7 +98,7 @@ public class CampusService {
       
         List<Campus> campus = campusRepository.findByTrainingManagerId(id);
 
-        if (campus == null) throw new ResourceNotFoundException("No campus found by that ID!");
+        if (campus.size() == 0) throw new ResourceNotFoundException("No campus found with training-manager id " + id);
         else return campus;
     }
 
@@ -111,7 +116,7 @@ public class CampusService {
 
         List<Campus> campus = campusRepository.findByStagingManagerId(id);
 
-        if (campus == null) throw new ResourceNotFoundException("No campus found by that ID!");
+        if (campus.size() == 0) throw new ResourceNotFoundException("No campus found with staging-manager id " + id);
         else return campus;
     }
 
@@ -186,8 +191,17 @@ public class CampusService {
         if (id <= 0) {
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
-        Campus campus = campusRepository.findById(id).get();
-        campusRepository.deleteById(campus.getId());
+
+        Optional<Campus> campus = campusRepository.findById(id);
+
+        if (!campus.isPresent()) {
+            throw new ResourceNotFoundException("No campus with id " + id + " was found!");
+        }
+
+        campus.get().getResourceMetadata().setCurrentlyActive(false);
+        campus.get().getResourceMetadata().setLastModifiedDateTime(LocalDateTime.now().toString());
+
+        campusRepository.save(campus.get());
         return true;
     }
 

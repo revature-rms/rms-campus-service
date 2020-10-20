@@ -72,7 +72,7 @@ public class BuildingService {
             throw new ResourceNotFoundException("No building found by that id!");
         }
 
-        return buildingRepository.findById(id);
+        return theBuilding;
     }
 
     /**

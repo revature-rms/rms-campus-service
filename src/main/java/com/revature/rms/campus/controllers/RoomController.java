@@ -81,6 +81,9 @@ public class RoomController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Room updateRoom(@RequestBody Room room) { return roomService.update(room); }
 
+    @PutMapping(value = "/room-number", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Room updateRoomNumber(@RequestBody Room room) { return roomService.updateRoomNumber(room); }
+
     /**
      * deleteRoomById method: The room object is deleted based on its roomId int
      * @param id roomId int value

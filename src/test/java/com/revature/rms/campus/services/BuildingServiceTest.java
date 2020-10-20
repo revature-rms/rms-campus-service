@@ -1,9 +1,7 @@
 package com.revature.rms.campus.services;
 import com.revature.rms.campus.entities.*;
-import com.revature.rms.core.metadata.*;
 import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.repositories.BuildingRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,7 +27,6 @@ public class BuildingServiceTest {
      * A non-null building object should be returned.
      */
     @Test
-    @Ignore
     public void testSaveWithValidBuilding() {
 
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
@@ -89,14 +86,13 @@ public class BuildingServiceTest {
      * testFindBuildingByIdWithValidId() ensures BuildingService.findById() returns the object containing the same id as the one provided.
      */
     @Test
-    @Ignore
     public void testFindBuildingByIdWithValidId() {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
 
         when(repo.findById(Mockito.any())).thenReturn(Optional.of(testBuilding));
         Optional<Building> actualResult = sut.findById(1);
-        assertEquals(actualResult, testBuilding);
+        assertEquals(actualResult, Optional.of(testBuilding));
     }
 
     /**
@@ -143,24 +139,6 @@ public class BuildingServiceTest {
     }
 
     /**
-     * testFindAllBuildingsByBuildingOwnerId asserts that the result of findAllBuildingsByOwnerId in
-     * the service class returns the expected list of Building objects.
-     */
-    @Test
-    @Ignore
-    public void testFindAllBuildingsByOwnerId() {
-
-        List<Building> expectedResult = new ArrayList<>();
-        Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
-                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
-
-        when(repo.findAll()).thenReturn(expectedResult);
-        List<Building> actualResult = sut.findAllBuildingsByOwnerId(1);
-
-        assertEquals(expectedResult, actualResult);
-    }
-
-    /**
      * testFindAllBuildingsByInvalidOwnerId tests that an ID less than 1 returns
      * an InvalidRequestException.
      */
@@ -184,6 +162,10 @@ public class BuildingServiceTest {
         assertEquals(expectedResult, actualResult);
     }
 
+    /**
+     * Tests to verify that a valid building can have its information
+     * updated.
+     */
     @Test
     public void testUpdateBuilding() {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
@@ -195,6 +177,10 @@ public class BuildingServiceTest {
         assertEquals(sut.update(testBuilding2), testBuilding2);
     }
 
+    /**
+     * Tests that an InvalidRequestException is thrown when attempting to update
+     * a null campus
+     */
     @Test(expected = InvalidRequestException.class)
     public void testUpdateWithNullBuilding() {
         sut.update(null);
@@ -270,7 +256,6 @@ public class BuildingServiceTest {
      * successfully one time when provided with a valid id.
      */
     @Test
-    @Ignore
     public void testDeleteWithValidId() {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
