@@ -52,7 +52,7 @@ public class BuildingController {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Building getBuildingById(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidRequestException();
+            throw new InvalidRequestException("Id cannot be less than or equal to zero!");
         }
         Optional<Building> _building = buildingService.findById(id);
         if (!_building.isPresent()) {

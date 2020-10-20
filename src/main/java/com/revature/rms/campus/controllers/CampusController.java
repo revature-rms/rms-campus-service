@@ -85,7 +85,7 @@ public class CampusController {
             throw new InvalidRequestException("Invalid Manager Id");
         }
         List<Campus> campus = campusService.findByStagingManagerId(id);
-        if (campus == null) {
+        if (campus.isEmpty()) {
             throw new ResourceNotFoundException("No Campuses Found.");
         }
         return campus;
