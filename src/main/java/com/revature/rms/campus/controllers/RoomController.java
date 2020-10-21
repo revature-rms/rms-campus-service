@@ -24,19 +24,26 @@ public class RoomController {
 
     /**
      * saveRoom method: Takes in a room object as the input.
+     *
      * @param room newly persisted room object
      * @return the newly added room object
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Room saveRoom(@RequestBody Room room) {
+
         if(room == null){
-            throw new ResourceNotFoundException();
+
+            throw new ResourceNotFoundException("Room cannot be null!");
+
         }
+
         return roomService.save(room);
+
     }
 
     /**
      * getAllRooms method: Returns a list of all the room objects in the database.
+     *
      * @return a list of all the rooms
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,23 +52,34 @@ public class RoomController {
 
     /**
      * getRoomById method: Returns a room object when the id int matches a record in the database.
+     *
      * @param id roomId int value
      * @return a room with matching id
      */
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Room getRoomById(@PathVariable int id) {
+
         if(id <= 0){
-            throw new InvalidRequestException();
+
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         Optional<Room> _room = roomService.findById(id);
+
         if(!_room.isPresent()){
-            throw new ResourceNotFoundException();
+
+            throw new ResourceNotFoundException("No room found!");
+
         }
-    return roomService.findById(id).get();
+
+        return roomService.findById(id).get();
+
     }
 
     /**
      * getRoomByOwner method: gets a list of rooms owned by a person
+     *
      * @param id ID of the owner
      * @return List of rooms
      */
@@ -74,6 +92,7 @@ public class RoomController {
 
     /**
      * updateRoom method: The room object is inputted and changes are saved.
+     *
      * @param room newly updated room object
      * @return updated/modified room object
      */
@@ -86,47 +105,21 @@ public class RoomController {
 
     /**
      * deleteRoomById method: The room object is deleted based on its roomId int
+     *
      * @param id roomId int value
      */
     @DeleteMapping(value = "/id/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public boolean deleteRoomById(@PathVariable int id) {
+
         if(id <= 0){
-            throw new InvalidRequestException();
+
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         roomService.delete(id);
         return true;
     }
 
-//    /**
-//     * handleInvalidRequestException method: Exception handler method that provides the correct
-//     * error response based on a InvalidRequestException
-//     * @param e InvalidRequestException where input from user is invalid
-//     * @return ErrorResponse that provides status, message, and timestamp of the exception
-//     */
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handleInvalidRequestException(InvalidRequestException e) {
-//        ErrorResponse err = new ErrorResponse();
-//        err.setMessage(e.getMessage());
-//        err.setTimestamp(System.currentTimeMillis());
-//        err.setStatus(400);
-//        return err;
-//    }
-//
-//    /**
-//     * handleResourceNotFoundException method: Exception handler method that provides the correct
-//     * error response based on a ResourceNotFoundException
-//     * @param e ResourceNotFoundException where a resource is not found in the database
-//     * @return ErrorResponse that provides status, message, and timestamp of the exception
-//     */
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
-//        ErrorResponse err = new ErrorResponse();
-//        err.setMessage(e.getMessage());
-//        err.setTimestamp(System.currentTimeMillis());
-//        err.setStatus(401);
-//        return err;
-//    }
 }
