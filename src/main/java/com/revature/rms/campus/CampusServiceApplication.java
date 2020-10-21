@@ -5,6 +5,7 @@ import com.revature.rms.campus.repositories.CampusRepository;
 import com.revature.rms.campus.services.BuildingService;
 import com.revature.rms.campus.services.CampusService;
 import com.revature.rms.campus.services.RoomService;
+import com.revature.rms.core.config.EurekaInstanceConfigBeanPostProcessor;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,10 @@ public class CampusServiceApplication  {
 	public static void main(String[] args) {
 
 		SpringApplication.run(CampusServiceApplication.class, args);
+	}
+	@Bean
+	public EurekaInstanceConfigBeanPostProcessor eurekaInstanceConfigBeanPostProcessor(){
+		return new EurekaInstanceConfigBeanPostProcessor();
 	}
 
 	@Bean
