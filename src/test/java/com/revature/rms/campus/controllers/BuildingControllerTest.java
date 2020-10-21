@@ -96,17 +96,6 @@ public class BuildingControllerTest {
         assertEquals(buildingController.saveBuilding(testBuilding), testBuilding2);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void testSaveBuildingWithNullBuilding() {
-
-        String id = "1";
-
-        Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
-                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
-
-        when(buildingService.save(Mockito.any())).thenReturn(testBuilding);
-        assertEquals(buildingController.saveBuilding(null), testBuilding);
-    }
 
 
     @Test

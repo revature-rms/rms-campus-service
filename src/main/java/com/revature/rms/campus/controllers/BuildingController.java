@@ -30,7 +30,7 @@ public class BuildingController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Building saveBuilding(@RequestBody Building building) {
         if (building == null) {
-            throw new ResourceNotFoundException();
+            throw new InvalidRequestException("A building must be entered in order to save one");
         }
         return buildingService.save(building);
     }
@@ -52,13 +52,13 @@ public class BuildingController {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Building getBuildingById(@PathVariable int id) {
         if (id <= 0) {
-            throw new InvalidRequestException();
+            throw new InvalidRequestException("Id number must be 1 or greater");
         }
         Optional<Building> _building = buildingService.findById(id);
         if (!_building.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("no building found with id: " + id);
         }
-        return buildingService.findById(id).get();
+        return _building.get();
     }
 
     /**

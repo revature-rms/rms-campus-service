@@ -166,16 +166,7 @@ public class BuildingServiceTest {
      * Tests to verify that a valid building can have its information
      * updated.
      */
-    @Test
-    public void testUpdateBuilding() {
-        Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
-                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
-        sut.save(testBuilding);
-        Building testBuilding2 = new Building(2, "Muma School of Business", "MSB", new Address(),
-                2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
-        when(repo.save(testBuilding2)).thenReturn(testBuilding2);
-        assertEquals(sut.update(testBuilding2), testBuilding2);
-    }
+
 
     /**
      * Tests that an InvalidRequestException is thrown when attempting to update

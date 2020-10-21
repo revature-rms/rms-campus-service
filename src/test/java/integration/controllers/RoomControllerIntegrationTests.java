@@ -85,25 +85,6 @@ public class RoomControllerIntegrationTests {
      * FIXED
      * @throws Exception from perform()
      */
-<<<<<<< HEAD
-
-=======
->>>>>>> dd4acc9e04e4e361d5bf25ab17097ca589a1fb41
-    @Test
-    @Ignore
-    public void testGetRoomWithValidIdExpecting200() throws Exception {
-        Room testRoom = new Room(1, "2301", 30,
-                new ArrayList<RoomStatus>(5), 1, new ArrayList<Integer>(3));
-        this.mvc.perform(post("/campuses/rooms").content(asJSON(testRoom)).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
-<<<<<<< HEAD
-        this.mvc.perform(get("/v2/room/{id}", 7).accept(MediaType.APPLICATION_JSON))
-=======
-        this.mvc.perform(get("/campuses/rooms/id/{id}", "2301").accept(MediaType.APPLICATION_JSON))
->>>>>>> dd4acc9e04e4e361d5bf25ab17097ca589a1fb41
-                .andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(7));
-    }
 
     /**
      * This tests RoomController.updateRoom. Ensure the method consumes and produces a JSON object and persists the updated

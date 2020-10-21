@@ -87,6 +87,17 @@ public class CampusServiceTests {
     }
 
     /**
+     * tests campus resource persistence exception
+     */
+    @Test(expected = ResourcePersistenceException.class)
+    public void testSavePersistence(){
+        Campus testCampus = new Campus(1, "University of South Florida", "USF", new Address(),
+                2, 3, 4, new ArrayList<Building>(1), new ArrayList<Integer>(3));
+
+        Mockito.when(repo.findByName(testCampus.getName())).thenReturn(testCampus);
+        sut.save(testCampus);
+    }
+    /**
      * Below are the tests for the CampusService.findAll(). The function is to call campusMongoRepository.findAll() to
      * retrieve all Campus objects from the database.
      */
