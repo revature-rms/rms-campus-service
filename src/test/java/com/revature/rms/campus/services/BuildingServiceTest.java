@@ -2,6 +2,7 @@ package com.revature.rms.campus.services;
 import com.revature.rms.campus.entities.*;
 import com.revature.rms.core.exceptions.*;
 import com.revature.rms.campus.repositories.BuildingRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

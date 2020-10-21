@@ -37,18 +37,24 @@ public class CampusService {
      */
     @Transactional
     public Campus save(Campus campus) {
+
         if (campus == null) {
+
             throw new InvalidRequestException("Cannot save null campus!");
+
         }
 
         if(campusRepository.findByName(campus.getName()) != null) {
+
             throw new ResourcePersistenceException("Campus with that name already exists");
+
         }
 
         Address address = addressRepository.save(campus.getShippingAddress());
         campus.setShippingAddress(address);
         Campus persisted = campusRepository.save(campus);
         return persisted;
+
     }
 
     /**
@@ -58,9 +64,11 @@ public class CampusService {
      */
     @Transactional(readOnly = true)
     public List<Campus> findAll() {
+
         Iterable<Campus> r = campusRepository.findAll();
         List<Campus> list = getListFromIterator(r);
         return list;
+
     }
 
     /**
@@ -73,15 +81,21 @@ public class CampusService {
     public Campus findById(int id) {
 
         if (id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
 
         Optional<Campus> _campus = campusRepository.findById(id);
+
         if (!_campus.isPresent()) {
+
             throw new  ResourceNotFoundException("No campus found by that ID!");
+
         }
 
         return _campus.get();
+
     }
 
     /**
@@ -92,14 +106,18 @@ public class CampusService {
      */
     @Transactional(readOnly = true)
     public List<Campus> findByTrainingManagerId(Integer id) {
+
         if (id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
       
         List<Campus> campus = campusRepository.findByTrainingManagerId(id);
 
         if (campus.size() == 0) throw new ResourceNotFoundException("No campus found with training-manager id " + id);
         else return campus;
+
     }
 
     /**
@@ -110,14 +128,18 @@ public class CampusService {
      */
     @Transactional(readOnly = true)
     public List<Campus> findByStagingManagerId(Integer id) {
+
         if (id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
 
         List<Campus> campus = campusRepository.findByStagingManagerId(id);
 
         if (campus.size() == 0) throw new ResourceNotFoundException("No campus found with staging-manager id " + id);
         else return campus;
+
     }
 
     /**
@@ -130,20 +152,34 @@ public class CampusService {
     public List<Campus> findByResourceOwnerId(Integer id){
 
         if(id <= 0){
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         Iterable<Campus> allCampuses = campusRepository.findAll();
         List<Campus> campuses = new ArrayList<Campus>();
+
         for(Campus campus : allCampuses){
+
             ResourceMetadata data = campus.getResourceMetadata();
+
             if(data.getResourceOwner() == id){
+
                 campuses.add(campus);
+
             }
+
         }
+
         if(campuses.isEmpty()){
+
             throw new ResourceNotFoundException("No campuses found for that owner!");
+
         }
+
         return campuses;
+
     }
 
     /**
@@ -156,10 +192,13 @@ public class CampusService {
     public Campus findByName(String name) {
 
         if (name == null || name == "") {
+
             throw new InvalidRequestException("Name cannot be null or empty!");
+
         }
 
         return campusRepository.findByName(name);
+
     }
 
 
@@ -173,10 +212,13 @@ public class CampusService {
     public Campus update(Campus campus) {
 
         if (campus == null) {
+
             throw new InvalidRequestException("Campus cannot be null!");
+
         }
 
         return campusRepository.save(campus);
+
     }
 
     /**
@@ -189,13 +231,17 @@ public class CampusService {
     public boolean delete(int id) {
 
         if (id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
 
         Optional<Campus> campus = campusRepository.findById(id);
 
         if (!campus.isPresent()) {
+
             throw new ResourceNotFoundException("No campus with id " + id + " was found!");
+
         }
 
         campus.get().getResourceMetadata().setCurrentlyActive(false);
@@ -203,6 +249,7 @@ public class CampusService {
 
         campusRepository.save(campus.get());
         return true;
+
     }
 
     /**
@@ -218,5 +265,7 @@ public class CampusService {
         List<T> list = new ArrayList<>();
         iterable.forEach(list::add);
         return list;
+
     }
+
 }

@@ -38,15 +38,24 @@ public class RoomService {
      */
     @Transactional
     public Room save(Room room){
+
         if(room == null){
+
             throw new ResourceNotFoundException("Room cannot be null!");
+
         }
+
         Room persisted = roomRepository.save(room);
+
         for (RoomStatus status: room.getCurrentStatus()) {
+
             status.setRoom(persisted);
             saveStatus(status);
+
         }
+
         return persisted;
+
     }
 
     /**
@@ -56,9 +65,11 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public List<Room> findAll(){
+
             Iterable<Room> r = roomRepository.findAll();
             List<Room> list = getListFromIterator(r);
             return list;
+
     }
 
     /**
@@ -70,15 +81,23 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public Optional<Room> findById(int id){
+
         if (id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
 
         Optional<Room> _room = roomRepository.findById(id);
+
         if(!_room.isPresent()){
+
             throw new ResourceNotFoundException("No room found with that ID!");
+
         }
+
         return _room;
+
     }
 
     /**
@@ -91,16 +110,23 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public Optional<Room> findByRoomNumber(String roomNum){
+
         if (roomNum.isEmpty() || (Integer.parseInt(roomNum) <= 0)) {
+
             throw new InvalidRequestException("Room number cannot be less than or equal to zero!");
+
         }
 
         Optional<Room> _room = roomRepository.findByRoomNumber(roomNum);
 
         if(!_room.isPresent()) {
+
             throw new ResourceNotFoundException("Room with that room number does not exist!");
+
         }
+
         return _room;
+
     }
 
     /**
@@ -115,6 +141,7 @@ public class RoomService {
     public List<Room> findByMaxOccupancy(int occupancy){
 
         return roomRepository.findByMaxOccupancy(occupancy);
+
     }
 
     /**
@@ -125,21 +152,36 @@ public class RoomService {
      */
     @Transactional
     public List<Room> findByResourceOwner(Integer id){
+
         if(id <= 0){
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         Iterable<Room> allRooms = roomRepository.findAll();
         List<Room> rooms = new ArrayList<Room>();
+
         for(Room room : allRooms){
+
             ResourceMetadata data = room.getResourceMetadata();
+
             if(data.getResourceOwner() == id){
+
                 rooms.add(room);
+
             }
+
         }
+
         if(rooms.isEmpty()){
+
             throw new ResourceNotFoundException("No room found by that resource owner!");
+
         }
+
         return rooms;
+
     }
 
     /**
@@ -151,6 +193,7 @@ public class RoomService {
      */
     @Transactional
     public Room update(Room room){
+
         Room oldRoom;
         oldRoom = roomRepository.findById(room.getId()).get();
 
@@ -169,6 +212,7 @@ public class RoomService {
         room.getResourceMetadata().setCurrentlyActive(oldRoom.getResourceMetadata().isCurrentlyActive());
 
         return roomRepository.save(room);
+
     }
 
     @Transactional
@@ -212,11 +256,16 @@ public class RoomService {
      */
     @Transactional
     public Room delete(int id){
+
         if (id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         Room deactivateRoom = roomRepository.findById(id).get();
         return update(deactivateRoom);
+
     }
 
     // +--------Methods using RoomStatusRepository------------------------------------+
@@ -266,9 +315,11 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public List<RoomStatus> findAllStatus(){
+
         Iterable<RoomStatus> r = roomStatusRepository.findAll();
         List<RoomStatus> list = getListFromIterator(r);
         return list;
+
     }
 
     /**
@@ -306,5 +357,7 @@ public class RoomService {
         List<T> list = new ArrayList<>();
         iterable.forEach(list::add);
         return list;
+
     }
+
 }
