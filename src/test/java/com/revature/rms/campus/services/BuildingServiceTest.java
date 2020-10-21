@@ -169,7 +169,6 @@ public class BuildingServiceTest {
      */
     @Ignore // refactored BuildingService.update(). Now this test needs to be refactored
     @Test
-    @Ignore
     public void testUpdateBuilding() {
         Building testBuilding = new Building(1, "Muma School of Business", "MSB", new Address(),
                 2, new ArrayList<Amenity>(1), new ArrayList<Room>(3));
