@@ -35,12 +35,24 @@ public class Room extends Resource{
     }
 
     public Room(int id, String roomNumber, Integer maxOccupancy, ArrayList<RoomStatus> currentStatus, int batchId, ArrayList<Integer> workOrders) {
+        this(id, roomNumber, maxOccupancy, batchId);
+        this.currentStatus = currentStatus;
+        this.workOrders = workOrders;
+    }
+
+    public Room(int id, String roomNumber, Integer maxOccupancy, int batchId) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.maxOccupancy = maxOccupancy;
-        this.currentStatus = currentStatus;
         this.batchId = batchId;
-        this.workOrders = workOrders;
+    }
+
+    public Room(int id, String roomNumber, Integer maxOccupancy, int batchId, ResourceMetadata resourceMetadata) {
+        this.id = id;
+        this.roomNumber = roomNumber;
+        this.maxOccupancy = maxOccupancy;
+        this.batchId = batchId;
+        this.resourceMetadata = resourceMetadata;
     }
 
     public void addRoomStatus(RoomStatus status) {

@@ -70,6 +70,18 @@ public class Campus extends Resource{
         this.corporateEmployees = corporateEmployees;
     }
 
+    public Campus(int id, String name, String abbrName, Address shippingAddress, int trainingManagerId, int stagingManagerId, int hrLead, List<Integer> corporateEmployees, ResourceMetadata resourceMetadata) {
+        this.id = id;
+        this.name = name;
+        this.abbrName = abbrName;
+        this.shippingAddress = shippingAddress;
+        this.trainingManagerId = trainingManagerId;
+        this.stagingManagerId = stagingManagerId;
+        this.hrLead = hrLead;
+        this.corporateEmployees = corporateEmployees;
+        this.resourceMetadata = resourceMetadata;
+    }
+
     public String getName() {
         return name;
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class BuildingService {
             throw new ResourceNotFoundException("No building found by that id!");
         }
 
-        return buildingRepository.findById(id);
+        return theBuilding;
     }
 
     /**
@@ -128,6 +129,20 @@ public class BuildingService {
         if (building == null) {
             throw new InvalidRequestException("Null value entered for building!");
         }
+
+        Building oldBuilding;
+        oldBuilding = buildingRepository.findById(building.getId()).get();
+
+        building.setCampus(oldBuilding.getCampus());
+        building.setResourceMetadata(oldBuilding.getResourceMetadata());
+
+        building.setResourceMetadata(oldBuilding.getResourceMetadata());
+
+        building.getResourceMetadata().setLastModifiedDateTime(LocalDateTime.now().toString());
+
+        // change to the logged in user's id when authentication is implemented
+        building.getResourceMetadata().setLastModifier(oldBuilding.getResourceMetadata().getLastModifier());
+
         return buildingRepository.save(building);
     }
 

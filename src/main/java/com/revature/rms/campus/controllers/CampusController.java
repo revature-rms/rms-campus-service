@@ -118,7 +118,7 @@ public class CampusController {
     @DeleteMapping(value = "/id/{id}")
     public boolean deleteCampusById(@PathVariable int id) {
         if(id <= 0) {
-            throw new InvalidRequestException("Invalid Campus Id");
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
         }
         campusService.delete(id);
         return true;
