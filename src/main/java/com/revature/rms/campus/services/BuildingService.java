@@ -35,9 +35,13 @@ public class BuildingService {
     public Building save(Building building) {
 
         if (building == null) {
+
             throw new ResourcePersistenceException("Null building cannot be saved!");
+
         }
+
         return buildingRepository.save(building);
+
     }
 
     /**
@@ -65,15 +69,21 @@ public class BuildingService {
     public Optional<Building> findById(int id) {
 
         if (id <= 0) {
+
             throw new InvalidRequestException("Id cannot be less than or equal to zero!");
+
         }
 
         Optional<Building> theBuilding = buildingRepository.findById(id);
+
         if (!theBuilding.isPresent()) {
+
             throw new ResourceNotFoundException("No building found by that id!");
+
         }
 
         return theBuilding;
+
     }
 
     /**
@@ -84,10 +94,15 @@ public class BuildingService {
      */
     @Transactional(readOnly = true)
     public Building findByName(String name) {
+
         if (name == null) {
+
             throw new InvalidRequestException("Null value entered for name!");
+
         }
+
         return buildingRepository.findByName(name);
+
     }
 
     /**
@@ -100,20 +115,33 @@ public class BuildingService {
     public List<Building> findAllBuildingsByOwnerId(Integer id){
 
         if(id <= 0){
+
             throw new InvalidRequestException("Id cannot be less than or equal to zero!");
+
         }
+
         Iterable<Building> allBuildings = buildingRepository.findAll();
         List<Building> buildings = new ArrayList<Building>();
+
         for (Building build : allBuildings){
+
             ResourceMetadata metadata = build.getResourceMetadata();
+
             if(metadata.getResourceOwner() == id){
+
                 buildings.add(build);
+
             }
+
         }
         if(buildings.isEmpty()){
+
             throw new ResourceNotFoundException("The list of buildings is empty!");
+
         }
+
         return buildings;
+
     }
 
     /**
@@ -127,7 +155,9 @@ public class BuildingService {
     public Building update(Building building) {
 
         if (building == null) {
+
             throw new InvalidRequestException("Null value entered for building!");
+
         }
 
         Building oldBuilding;
@@ -144,6 +174,7 @@ public class BuildingService {
         building.getResourceMetadata().setLastModifier(oldBuilding.getResourceMetadata().getLastModifier());
 
         return buildingRepository.save(building);
+
     }
 
     /**
@@ -156,9 +187,13 @@ public class BuildingService {
     public void delete(int id) {
 
         if (id <= 0) {
+
             throw new InvalidRequestException("Id cannot be less than or equal to zero!");
+
         }
+
         buildingRepository.deleteById(id);
+
     }
 
     /**
@@ -169,10 +204,14 @@ public class BuildingService {
      */
     @Transactional(readOnly = true)
     public Building findByTrainingLeadId(int id) {
+
         if (id <= 0) throw new InvalidRequestException("Id cannot be less than or equal to zero!");
+
         Building temp = buildingRepository.findByTrainingLead(id);
+
         if (temp == null) throw new ResourceNotFoundException("No training lead found!");
         else return temp;
+
     }
 
     /**
@@ -188,5 +227,6 @@ public class BuildingService {
         List<T> list = new ArrayList<>();
         iterable.forEach(list::add);
         return list;
+
     }
 }
