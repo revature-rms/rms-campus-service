@@ -22,19 +22,26 @@ public class CampusController {
 
     /**
      * saveCampus method: Takes in a campus object as the input.
+     *
      * @param campus newly persisted campus object
      * @return the newly added campus object
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Campus saveCampus(@RequestBody Campus campus) {
+
         if (campus == null) {
-            throw new InvalidRequestException();
+
+            throw new InvalidRequestException("Campus cannot be null!");
+
         }
+
         return campusService.save(campus);
+
     }
 
     /**
      * getAllCampus method: Returns a list of all the campus objects in the database.
+     *
      * @return a list of all the campuses
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,57 +49,83 @@ public class CampusController {
 
     /**
      * getCampusById method: Returns a campus object when the id int matches a record in the database.
+     *
      * @param id campusId int value
      * @return a campus with matching id
      */
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Campus getCampusById(@PathVariable int id) {
+
         if (id <= 0) {
-            throw new InvalidRequestException("Invalid Campus Id");
+
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         Campus campus = campusService.findById(id);
 
         return campus;
+
     }
 
     /**
      * getCampusByTrainingManagerId method: Returns a campus object
      * that matches a trainingLeadId int id.
+     *
      * @param id trainingLeadId int value
      * @return a campus with matching trainerLeadId
      */
     @GetMapping(value = "/training-managers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Campus> getCampusByTrainingManagerId(@PathVariable int id) {
+
         if (id <= 0) {
-            throw new InvalidRequestException("Invalid Trainer Id");
+
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         List<Campus> campus = campusService.findByTrainingManagerId(id);
+
         if (campus == null) {
-            throw new ResourceNotFoundException("No Campuses Found.");
+
+            throw new ResourceNotFoundException("Campus cannot be null!");
+
         }
+
         return campus;
     }
 
     /**
      * getCampusByStagingManagerId method: Returns a campus object
      * that matches a stagingManagerId int id.
+     *
      * @param id stagingManagerId int value
      * @return a campus with matching stagingManagerId
      */
     @GetMapping(value = "/staging-managers/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Campus> getCampusByStagingManagerId(@PathVariable int id) {
+
         if (id <= 0) {
-            throw new InvalidRequestException("Invalid Manager Id");
+
+            throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         List<Campus> campus = campusService.findByStagingManagerId(id);
+
         if (campus == null) {
-            throw new ResourceNotFoundException("No Campuses Found.");
+
+            throw new ResourceNotFoundException("Campus cannot be null!");
+
         }
+
         return campus;
+
     }
 
     /**
      * getByResourceOwnerId method: Retrieves list of campuses that a specific app user owns
+     *
      * @param id ID of the app user
      * @return List of campuses
      */
@@ -104,6 +137,7 @@ public class CampusController {
 
     /**
      * updateCampus method: The campus object is inputted and changes are saved.
+     *
      * @param campus newly updated campus object
      * @return updated/modified campus object
      */
@@ -113,46 +147,22 @@ public class CampusController {
 
     /**
      * deleteCampusById method: The campus object is deleted based on its campusId int
+     *
      * @param id campusId int value
      */
     @DeleteMapping(value = "/id/{id}")
     public boolean deleteCampusById(@PathVariable int id) {
+
         if(id <= 0) {
+
             throw new InvalidRequestException("ID cannot be less than or equal to zero!");
+
         }
+
         campusService.delete(id);
+
         return true;
+
     }
 
-//    /**
-//     * handleInvalidRequestException method: Exception handler method that provides the correct
-//     * error response based on a InvalidRequestException
-//     * @param e InvalidRequestException where input from user is invalid
-//     * @return ErrorResponse that provides status, message, and timestamp of the exception
-//     */
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handleInvalidRequestException(InvalidRequestException e) {
-//        ErrorResponse err = new ErrorResponse();
-//        err.setMessage(e.getMessage());
-//        err.setTimestamp(String.valueOf(System.currentTimeMillis()));
-//        err.setStatus(400);
-//        return err;
-//    }
-//
-//    /**
-//     * handleResourceNotFoundException method: Exception handler method that provides the correct
-//     * error response based on a ResourceNotFoundException
-//     * @param e ResourceNotFoundException where a resource is not found in the database
-//     * @return ErrorResponse that provides status, message, and timestamp of the exception
-//     */
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
-//        ErrorResponse err = new ErrorResponse();
-//        err.setMessage(e.getMessage());
-//        err.setTimestamp(System.currentTimeMillis());
-//        err.setStatus(401);
-//        return err;
-//    }
 }
