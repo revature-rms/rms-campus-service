@@ -167,6 +167,7 @@ public class BuildingServiceTest {
      * Tests to verify that a valid building can have its information
      * updated.
      */
+    @Ignore // refactored BuildingService.update(). Now this test needs to be refactored
     @Test
     @Ignore
     public void testUpdateBuilding() {
